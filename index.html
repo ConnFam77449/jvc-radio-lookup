@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -442,7 +443,7 @@
           <th data-sort="Maestro Compatible">Maestro</th>
           <th data-sort="SiriusXM">SiriusXM</th>
           <th data-sort="HD radio">HD Radio</th>
-          <th data-sort="Screen Mirroring">Mirroring</th>
+          <th data-sort="Screen Mirroring">Screen Mirroring</th>
           <th data-sort="HDMI Input" class="extra-col">HDMI</th>
           <th data-sort="Camera Inputs" class="extra-col">Cameras</th>
           <th data-sort="HD Cam Support" class="extra-col">HD Cam</th>
@@ -542,6 +543,7 @@ function populateDropdowns() {
     el.innerHTML = '<option value="">All</option>';
     const vals = [...new Set(allData.map(r => (r[key]||'').trim()).filter(Boolean))]
       .filter(v => !(id === 'fScreenSize' && v === 'N/A'))
+      .filter(v => !(id === 'fScreenSize' && (v === '6.8"' || v === '6.92"')))
       .filter(v => !(id === 'fSiriusXM' && v === 'Yes (360L Ready)'))
       .sort((a,b) => {
         // Put Yes/Yes variants before No in Yes/No filters
@@ -564,6 +566,23 @@ function populateDropdowns() {
       const o = document.createElement('option');
       o.value = v; o.textContent = v; el.appendChild(o);
     });
+    // Add combined 6.8"-7" option for Screen Size
+    if (id === 'fScreenSize') {
+      const o = document.createElement('option');
+      o.value = '6.8-7'; o.textContent = '6.8" - 7"';
+      el.appendChild(o);
+      // Re-sort: rebuild options in correct order
+      const opts = [...el.querySelectorAll('option')];
+      const allOpt = opts.find(o => o.value === '');
+      const sizeOpts = opts.filter(o => o.value !== '').sort((a,b) => {
+        const na = parseFloat(a.value) || 0;
+        const nb = parseFloat(b.value) || 0;
+        return nb - na;
+      });
+      el.innerHTML = '';
+      el.appendChild(allOpt);
+      sizeOpts.forEach(o => el.appendChild(o));
+    }
     el.value = cur;
   }
 }
@@ -582,6 +601,9 @@ function applyFilters() {
       // SiriusXM: "Yes" should match both "Yes" and "Yes (360L Ready)"
       if (id === 'fSiriusXM' && fv === 'Yes') {
         if (!rv.startsWith('Yes')) return false;
+      // Screen Size: "6.8-7" should match both "6.8"" and "6.92""
+      } else if (id === 'fScreenSize' && fv === '6.8-7') {
+        if (rv !== '6.8"' && rv !== '6.92"') return false;
       } else {
         if (rv !== fv) return false;
       }
