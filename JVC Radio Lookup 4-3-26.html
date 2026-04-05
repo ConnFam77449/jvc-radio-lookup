@@ -1,0 +1,1078 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JVC Radio Lookup</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #1e40af;
+      --blue-dark: #1e3a8a;
+      --blue-light: #eff6ff;
+      --blue-mid: #3b82f6;
+      --red: #dc2626;
+      --red-dark: #b91c1c;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --border: #e5e7eb;
+      --text: #111827;
+      --text-muted: #6b7280;
+      --text-light: #9ca3af;
+      --bg: #f3f4f6;
+      --surface: #ffffff;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container { width: 100%; max-width: 2200px; }
+
+    /* ── HEADER ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    h1 {
+      font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: -0.02em;
+    }
+    h1 span { color: var(--text-muted); font-weight: 400; font-size: 0.75em; margin-left: 8px; }
+
+    /* ── FILTERS ── */
+    .filters {
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .filter-group { display: flex; flex-direction: column; gap: 4px; }
+    .filter-group label,
+    .filter-group-label {
+      font-size: 0.72em;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: none;
+      letter-spacing: 0.02em;
+    }
+    .filter-group input:not([type="checkbox"]),
+    .filter-group select {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font-size: 0.85em;
+      color: var(--text);
+      background: var(--surface);
+      transition: border-color .15s, box-shadow .15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .filter-group select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      padding-right: 28px;
+    }
+    .filter-group input:focus,
+    .filter-group select:focus {
+      outline: none;
+      border-color: var(--blue-mid);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+
+    /* checkbox row */
+    .checkbox-row {
+      display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: var(--surface);
+    }
+    .cb-label {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 0.85em; color: var(--text);
+      cursor: pointer; user-select: none;
+    }
+    .cb-label input[type="checkbox"] {
+      width: 14px; height: 14px;
+      accent-color: var(--blue);
+    }
+
+    /* autocomplete */
+    .ac-wrap { position: relative; }
+    .ac-list {
+      position: absolute; top: calc(100% + 2px); left: 0; right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-md);
+      max-height: 220px; overflow-y: auto;
+      z-index: 200; display: none;
+    }
+    .ac-list.show { display: block; }
+    .ac-item {
+      padding: 8px 12px; font-size: 0.83em; cursor: pointer;
+      border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: center;
+    }
+    .ac-item:last-child { border-bottom: none; }
+    .ac-item:hover, .ac-item.active { background: var(--blue-light); }
+    .ac-item em { font-style: normal; color: var(--blue); font-weight: 600; }
+    .ac-tag {
+      font-size: 0.75em; color: var(--text-muted);
+      background: var(--bg); border-radius: 4px; padding: 1px 6px;
+    }
+
+    /* filter actions row */
+    .filter-actions {
+      grid-column: 1 / -1;
+      display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    }
+    .btn {
+      padding: 8px 16px; border-radius: 7px; border: none;
+      font-size: 0.85em; font-weight: 600; cursor: pointer; transition: background .15s, transform .1s;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-red { background: var(--red); color: #fff; }
+    .btn-red:hover { background: var(--red-dark); }
+    .btn-blue { background: var(--blue); color: #fff; }
+    .btn-blue:hover { background: var(--blue-dark); }
+
+    /* count bar */
+    .count-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 8px;
+      margin-bottom: 8px;
+      font-size: 0.84em; color: var(--text-muted);
+    }
+    .count-bar strong { color: var(--text); }
+
+    /* ── TABLE ── */
+    .scroll-hint { display: none; font-size: 0.75em; color: var(--text-light); text-align: center; margin-bottom: 6px; }
+    .top-scroll { width: 100%; overflow-x: auto; overflow-y: hidden; height: 10px; background: var(--surface); border-radius: 10px 10px 0 0; }
+    .top-scroll-inner { height: 1px; }
+    .table-wrap {
+      width: 100%; overflow-x: auto;
+      background: var(--surface);
+      border-radius: 0 0 12px 12px;
+      box-shadow: var(--shadow);
+      -webkit-overflow-scrolling: touch;
+    }
+    table { width: max-content; min-width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.83em; }
+    th, td { padding: 9px 12px; text-align: center; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    th {
+      background: var(--blue);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.9em;
+      text-transform: none;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      position: sticky; top: 0; z-index: 2;
+      user-select: none;
+    }
+    th:hover { background: var(--blue-dark); }
+    th.sorted { text-decoration: underline; text-underline-offset: 3px; }
+    th:first-child, td:first-child {
+      position: sticky; left: 0; z-index: 1;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 9px 10px;
+      text-align: center;
+    }
+    th:first-child { z-index: 3; background: var(--blue); }
+    th:nth-child(2), td:nth-child(2) {
+      position: sticky; left: 41px; z-index: 1;
+      background: var(--surface);
+      border-right: 2px solid var(--border);
+    }
+    th:nth-child(2) { z-index: 3; background: var(--blue); }
+    tr:hover td { background: #f8faff; }
+    tr:hover td:first-child,
+    tr:hover td:nth-child(2) { background: #eef3ff; }
+    tr.selected td { background: #eff6ff !important; }
+    tr.selected td:first-child,
+    tr.selected td:nth-child(2) { background: #dbeafe !important; }
+    a { color: var(--blue); text-decoration: underline; font-weight: 700; }
+    a:hover { text-decoration: underline; }
+    .no-results { text-align: center; padding: 48px; color: var(--text-muted); font-size: 0.95em; }
+
+    input[type="checkbox"] {
+      width: 15px; height: 15px; cursor: pointer;
+      accent-color: var(--blue);
+    }
+
+    /* yes/no badges */
+    .badge-yes { background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 10px; font-size: 0.82em; font-weight: 600; }
+    .badge-no { background: #fee2e2; color: #b91c1c; padding: 2px 8px; border-radius: 10px; font-size: 0.82em; font-weight: 600; }
+    .badge-na { background: #f3f4f6; color: #6b7280; padding: 2px 8px; border-radius: 10px; font-size: 0.82em; font-weight: 600; }
+
+    /* ── COMPARE PANEL ── */
+    .compare-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .compare-header h2 { font-size: 0.95em; font-weight: 700; color: var(--blue); }
+    .compare-header-right { display: flex; align-items: center; gap: 8px; }
+    .compare-toggle-btn {
+      font-size: 0.78em; padding: 5px 12px; border-radius: 6px;
+      background: var(--green); color: #fff; border: none;
+      cursor: pointer; font-weight: 600;
+    }
+    .compare-toggle-btn:hover { background: #15803d; }
+
+    .compare-body { overflow: auto; flex: 1; padding: 12px 16px; }
+    .compare-table { border-collapse: collapse; min-width: 100%; font-size: 0.82em; }
+    .compare-table th, .compare-table td {
+      padding: 7px 14px; border: 1px solid var(--border);
+      text-align: left; white-space: nowrap;
+    }
+    .compare-table thead th {
+      background: var(--blue); color: #fff; font-weight: 700;
+      position: sticky; top: 0;
+      font-size: 1em; text-transform: none; letter-spacing: 0;
+      cursor: default; text-align: center;
+    }
+    .compare-table thead th:first-child { background: var(--blue-dark); }
+    .compare-table tbody th {
+      background: var(--bg); color: var(--text);
+      font-weight: 700; font-size: 0.9em;
+      text-transform: none; letter-spacing: 0.02em;
+      position: sticky; left: 0; z-index: 1;
+      cursor: default; text-align: center;
+    }
+    .compare-table tbody td { background: var(--surface); text-align: center; }
+    .compare-table tbody tr:nth-child(even) td { background: #fafafa; }
+    .best { color: var(--green); font-weight: 700; }
+    .remove-col {
+      font-size: 0.75em; cursor: pointer; color: var(--red);
+      display: block; text-align: center; margin-top: 3px;
+      font-weight: 600;
+    }
+    .remove-col:hover { text-decoration: underline; }
+
+    .compare-bar {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.82em; flex-wrap: wrap;
+    }
+    .compare-chip {
+      background: var(--blue-light); color: var(--blue);
+      border-radius: 20px; padding: 3px 10px;
+      font-weight: 600; font-size: 0.85em;
+      cursor: pointer; border: 1px solid #bfdbfe;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .compare-chip .x { color: var(--text-muted); font-weight: 400; }
+    .compare-chip:hover .x { color: var(--red); }
+
+    .mobile-break { display: none; }
+
+    .extra-col { display: none; }
+    .extra-visible .extra-col { display: table-cell; }
+    .btn-extra {
+      padding: 6px 14px; border-radius: 7px; border: 1px solid var(--blue);
+      font-size: 0.82em; font-weight: 600; cursor: pointer;
+      background: var(--surface); color: var(--blue);
+      transition: background .15s;
+    }
+    .btn-extra:hover { background: var(--blue-light); }
+    .btn-extra.active { background: var(--blue); color: #fff; }
+
+    /* mobile */
+    @media (max-width: 768px) {
+      .scroll-hint { display: block; }
+      .filters { grid-template-columns: 1fr 1fr; }
+      th, td { font-size: 0.75em; padding: 7px 9px; }
+      .mobile-break { display: block; }
+    }
+    @media (max-width: 480px) {
+      .filters { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>JVC Radio Lookup</h1>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <div class="filter-actions">
+      <button class="btn btn-red" id="clearFilters">Clear All Filters</button>
+      <span style="font-size:0.9em; color:var(--text-muted); font-weight:800;">
+        Not seeing the results you expected?<br class="mobile-break"/> Click <span style="color:var(--red);">Clear All Filters</span> and start again
+      </span>
+    </div>
+
+    <div class="filter-group" style="grid-column: span 2;">
+      <label>Part # / Global Search</label>
+      <div class="ac-wrap">
+        <input type="text" id="search" placeholder="Search any field..." autocomplete="off" />
+        <div class="ac-list" id="acList"></div>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label>Screen Size</label>
+      <select id="fScreenSize"><option value="">All</option></select>
+    </div>
+    <div class="filter-group">
+      <label>HD Display</label>
+      <select id="fHDDisplay"><option value="">All</option></select>
+    </div>
+    <div class="filter-group">
+      <label>CarPlay / Android Auto</label>
+      <select id="fCarPlay"><option value="">All</option></select>
+    </div>
+    <div class="filter-group">
+      <label>Gesture Control</label>
+      <select id="fGesture"><option value="">All</option></select>
+    </div>
+    <div class="filter-group">
+      <label>CD Player</label>
+      <select id="fCD"><option value="">All</option></select>
+    </div>
+    <div class="filter-group">
+      <label>DVD Player</label>
+      <select id="fDVD"><option value="">All</option></select>
+    </div>
+    <div class="filter-group">
+      <label>Maestro Compatible</label>
+      <select id="fMaestro"><option value="">All</option></select>
+    </div>
+    <div class="filter-group">
+      <label>SiriusXM</label>
+      <select id="fSiriusXM"><option value="">All</option></select>
+    </div>
+    <div class="filter-group">
+      <label>HD Radio</label>
+      <select id="fHDRadio"><option value="">All</option></select>
+    </div>
+    <div class="filter-group">
+      <label>Alexa Compatible</label>
+      <select id="fAlexa"><option value="">All</option></select>
+    </div>
+    <div class="filter-group" style="grid-column: span 2;">
+      <span class="filter-group-label">Audio Formats (must support all checked)</span>
+      <div class="checkbox-row" id="fAudioFormats">
+        <label class="cb-label"><input type="checkbox" value="MP3" /> MP3</label>
+        <label class="cb-label"><input type="checkbox" value="WMA" /> WMA</label>
+        <label class="cb-label"><input type="checkbox" value="AAC" /> AAC</label>
+        <label class="cb-label"><input type="checkbox" value="WAV" /> WAV</label>
+        <label class="cb-label"><input type="checkbox" value="FLAC" /> FLAC</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- COUNT BAR -->
+  <div class="count-bar">
+    <span id="count">Showing all entries</span>
+    <span style="font-size:1.1em; color:var(--red); font-weight:900;">&#9650;&#9650;&#9650; You can use <span style="text-decoration:underline; text-underline-offset:3px;">Any</span> or <span style="text-decoration:underline; text-underline-offset:3px;">All</span> the filters above to narrow results below &#9650;&#9650;&#9650;</span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button class="btn-extra" id="extraToggle">Show All Features</button>
+      <span id="compareCount" style="display:none; color: var(--blue); font-weight: 600;"></span>
+    </div>
+  </div>
+
+  <!-- COMPARE PANEL -->
+  <div id="comparePanel" style="display:none; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 10px; overflow: hidden;">
+    <div class="compare-header">
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <h2>Compare Selected</h2>
+        <div class="compare-bar" id="compareChips"></div>
+      </div>
+      <div class="compare-header-right">
+        <button class="compare-toggle-btn" id="toggleCompareView">Compare</button>
+        <button class="btn btn-red" id="clearCompare" style="padding:5px 12px; font-size:0.78em;">Clear All</button>
+      </div>
+    </div>
+    <div class="compare-body" id="compareBody" style="display:none;"></div>
+  </div>
+
+  <div class="scroll-hint">&larr; Swipe left/right to see all columns &rarr;</div>
+  <div class="top-scroll" id="topScroll"><div class="top-scroll-inner" id="topScrollInner"></div></div>
+
+  <div class="table-wrap" id="tableWrap">
+    <table id="resultsTable">
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="selectAll" title="Select all visible" /></th>
+          <th data-sort="Part #">Part #</th>
+          <th data-sort="Form Factor">Form Factor</th>
+          <th data-sort="Screen Size">Screen Size</th>
+          <th data-sort="HD Display">HD Display</th>
+          <th data-sort="CarPlay and Android Auto">CarPlay / Android Auto</th>
+          <th data-sort="Gesture Control">Gesture</th>
+          <th data-sort="CD Player">CD</th>
+          <th data-sort="DVD Player">DVD</th>
+          <th data-sort="Maestro Compatible">Maestro</th>
+          <th data-sort="SiriusXM">SiriusXM</th>
+          <th data-sort="HD radio">HD Radio</th>
+          <th data-sort="Screen Mirroring" class="extra-col">Mirroring</th>
+          <th data-sort="HDMI Input" class="extra-col">HDMI</th>
+          <th data-sort="Camera Inputs" class="extra-col">Cameras</th>
+          <th data-sort="HD Cam Support" class="extra-col">HD Cam</th>
+          <th data-sort="Audio Input" class="extra-col">Audio In</th>
+          <th data-sort="Video Output" class="extra-col">Video Out</th>
+          <th data-sort="USB Ports" class="extra-col">USB Ports</th>
+          <th data-sort="Pre-amp Outputs" class="extra-col">Pre-amp Out</th>
+          <th data-sort="Alexa Compatible">Alexa Compatible</th>
+          <th data-sort="Power Output" class="extra-col">Power</th>
+          <th data-sort="Audio Formats">Audio Formats</th>
+          <th>Manual</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+  <div class="no-results" id="noResults" style="display:none;">No matching radios found.</div>
+
+</div>
+
+<script>
+const rawData = [
+{"Part #":"KW-M180BT","Form Factor":"Media Receiver (Double DIN)","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"No","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"1","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"2 (2.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3","URL":"https://www.us.jvc.com/car/multimedia/kw_m180bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1095-00b.pdf"},
+{"Part #":"KW-X850BTS","Form Factor":"Double DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"0","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kw_x850bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3844-00.pdf"},
+{"Part #":"KD-X280BT","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"No","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"0","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_x280bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3840-00.pdf"},
+{"Part #":"KW-R950BTS","Form Factor":"Double DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"Yes","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"No","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"0","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kw_r950bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3843-00.pdf"},
+{"Part #":"KD-T920BTS","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"Yes","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"0","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_t920bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3880-00.pdf"},
+{"Part #":"KD-T720BT","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"Yes","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"No","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"0","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_t720bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3880-00.pdf"},
+{"Part #":"KW-M695BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"Yes","HDMI Input":"No","Camera Inputs":"2","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (2.5V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV","URL":"https://www.us.jvc.com/car/multimedia/kw_m695bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1160_ref_K_En_20b.pdf"},
+{"Part #":"KW-M690BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Yes","HDMI Input":"No","Camera Inputs":"2","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (2.5V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV","URL":"https://www.us.jvc.com/car/multimedia/kw_m690bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1160_ref_K_En_20b.pdf"},
+{"Part #":"KW-Z1000AW","Form Factor":"Direct Replacement","Screen Size":"10.1\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes (360L Ready)","HD radio":"Yes","Screen Mirroring":"Yes","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"Yes","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/directreplacement/kw_z1000aw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1194_ref_K_En_00b.pdf"},
+{"Part #":"KW-Z800AW","Form Factor":"Direct Replacement","Screen Size":"8.0\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes (360L Ready)","HD radio":"Yes","Screen Mirroring":"Yes","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"Yes","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/directreplacement/kw_z800aw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1194_ref_K_En_00b.pdf"},
+{"Part #":"KW-Z1001W","Form Factor":"Floating Screen (Single DIN Chassis)","Screen Size":"10.1\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes (360L Ready)","HD radio":"Yes","Screen Mirroring":"Yes","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"Yes","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_z1001w/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1194_ref_K_En_00b.pdf"},
+{"Part #":"KW-Z900W","Form Factor":"Floating Screen (Single DIN Chassis)","Screen Size":"9.0\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Yes","HDMI Input":"Yes","Camera Inputs":"2","HD Cam Support":"Yes","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, AAC, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_z900w/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1214_ref_K_En_20.pdf"},
+{"Part #":"KW-M795BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.92\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"Yes","HDMI Input":"Yes","Camera Inputs":"2","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV","URL":"https://www.us.jvc.com/car/multimedia/kw_m795bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1208_ref_K_En_20.pdf"},
+{"Part #":"KW-V660BT","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired","Gesture Control":"No","CD Player":"Yes","DVD Player":"Yes","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Yes","HDMI Input":"Yes","Camera Inputs":"2","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_v660bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5H-0357-03_K_EnFrEs.pdf"},
+{"Part #":"KW-M595BT","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Yes","HDMI Input":"No","Camera Inputs":"1","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"http://www.us.jvc.com/car/multimedia/kw_m595bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1158-30b.pdf"},
+{"Part #":"KW-M590BT","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Yes","HDMI Input":"No","Camera Inputs":"1","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/multimedia/kw_m590bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1158-30b.pdf"},
+{"Part #":"KW-X855BTS","Form Factor":"Double DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"0","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front & 1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kw_x855bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3844-00.pdf"},
+{"Part #":"KD-X380BTS","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"0","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_x380bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3881-00.pdf"},
+{"Part #":"KD-T925BTS","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"Yes","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"0","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_t925bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3880-00.pdf"},
+{"Part #":"KW-M875BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"Yes","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (5.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, AAC, WAV, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_m875bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-0861_ref_E_En_00b.pdf"},
+{"Part #":"KD-X480BHS","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"0","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"3 (5.0V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA, FLAC","URL":"https://www.jvc.com/usa/car-entertainment/audio-receivers/kd-x480bhs/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3881-00.pdf"},
+{"Part #":"KW-V960BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"Yes","DVD Player":"Yes","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Yes","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (5.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_v960bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/IM405_ref_K_En_11.pdf"}
+];
+
+// ── STATE ─────────────────────────────────────────────
+let allData = rawData.map(r => {
+  const dvd = (r['DVD Player']||'').trim();
+  if (!dvd || dvd === 'None') r['DVD Player'] = 'No';
+  return r;
+});
+
+// Default display order
+const DEFAULT_ORDER = [
+  'KW-Z1000AW','KW-Z800AW',
+  'KW-Z1001W','KW-Z900W','KW-V960BW',
+  'KW-M865BW','KW-M875DBW','KW-M875BW','KW-M795BW','KW-M695BW','KW-M690BW',
+  'KW-V660BT','KW-V66BT','KW-M595BT','KW-M590BT','KW-M180BT',
+  'KW-X855BTS','KW-X850BTS','KW-X850BT',
+  'KD-X480BHS','KD-X380BTS','KD-X38MBS','KD-X280BT','KD-XD28BT','KD-SX27BT',
+  'KW-R950BTS','KW-R950BT','KD-T925BTS','KD-T920BTS','KD-T720BT'
+];
+const orderMap = {};
+DEFAULT_ORDER.forEach((p,i) => orderMap[p] = i);
+allData.sort((a,b) => {
+  const ia = orderMap[a['Part #']] ?? 9999;
+  const ib = orderMap[b['Part #']] ?? 9999;
+  return ia - ib;
+});
+
+let filteredData = [];
+let sortKey = null, sortAsc = true;
+let selectedParts = new Set();
+let compareExpanded = false;
+
+// Filter config: id -> data key
+const FILTER_SELECT_MAP = {
+  fScreenSize: 'Screen Size',
+  fHDDisplay: 'HD Display',
+  fCarPlay: 'CarPlay and Android Auto',
+  fGesture: 'Gesture Control',
+  fCD: 'CD Player',
+  fDVD: 'DVD Player',
+  fMaestro: 'Maestro Compatible',
+  fSiriusXM: 'SiriusXM',
+  fHDRadio: 'HD radio',
+  fAlexa: 'Alexa Compatible'
+};
+
+// ── POPULATE DROPDOWNS ────────────────────────────────
+function populateDropdowns() {
+  for (const [id, key] of Object.entries(FILTER_SELECT_MAP)) {
+    const el = document.getElementById(id);
+    const cur = el.value;
+    el.innerHTML = '<option value="">All</option>';
+    const vals = [...new Set(allData.map(r => (r[key]||'').trim()).filter(Boolean))]
+      .filter(v => !(id === 'fScreenSize' && v === 'N/A'))
+      .filter(v => !(id === 'fSiriusXM' && v === 'Yes (360L Ready)'))
+      .sort((a,b) => {
+        // Put Yes/Yes variants before No in Yes/No filters
+        const aIsYes = a === 'Yes' || a.startsWith('Yes');
+        const bIsYes = b === 'Yes' || b.startsWith('Yes');
+        const aIsNo = a === 'No';
+        const bIsNo = b === 'No';
+        if (aIsYes && bIsNo) return -1;
+        if (aIsNo && bIsYes) return 1;
+        // Screen Size: largest to smallest
+        if (id === 'fScreenSize') return b.localeCompare(a, undefined, {numeric:true});
+        // CarPlay: Wired/Wireless, Wired, No
+        if (id === 'fCarPlay') {
+          const order = {'Wired / Wireless': 1, 'Wired': 2, 'No': 3};
+          return (order[a]||99) - (order[b]||99);
+        }
+        return a.localeCompare(b, undefined, {numeric:true});
+      });
+    vals.forEach(v => {
+      const o = document.createElement('option');
+      o.value = v; o.textContent = v; el.appendChild(o);
+    });
+    el.value = cur;
+  }
+}
+populateDropdowns();
+
+// ── FILTER & RENDER ───────────────────────────────────
+function applyFilters() {
+  const term = document.getElementById('search').value.trim().toLowerCase();
+
+  filteredData = allData.filter(r => {
+    if (term && !Object.values(r).some(v => String(v).toLowerCase().includes(term))) return false;
+    for (const [id, key] of Object.entries(FILTER_SELECT_MAP)) {
+      const fv = document.getElementById(id).value;
+      if (!fv) continue;
+      const rv = (r[key]||'').trim();
+      // SiriusXM: "Yes" should match both "Yes" and "Yes (360L Ready)"
+      if (id === 'fSiriusXM' && fv === 'Yes') {
+        if (!rv.startsWith('Yes')) return false;
+      } else {
+        if (rv !== fv) return false;
+      }
+    }
+    // Audio Formats checkboxes — must support ALL checked formats
+    const checkedFormats = [...document.querySelectorAll('#fAudioFormats input[type="checkbox"]:checked')].map(cb => cb.value);
+    if (checkedFormats.length > 0) {
+      const supported = (r['Audio Formats']||'').split(',').map(s => s.trim().toUpperCase());
+      if (!checkedFormats.every(f => supported.includes(f.toUpperCase()))) return false;
+    }
+    return true;
+  });
+
+  // sort
+  if (sortKey) {
+    filteredData = [...filteredData].sort((a,b) => {
+      let va = a[sortKey]||'', vb = b[sortKey]||'';
+      const na = parseFloat(va), nb = parseFloat(vb);
+      if (!isNaN(na) && !isNaN(nb) && na !== nb) return sortAsc ? na-nb : nb-na;
+      va = va.toString().toLowerCase(); vb = vb.toString().toLowerCase();
+      return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+    });
+  }
+
+  renderTable();
+}
+
+function badgeHTML(val) {
+  const v = (val||'').trim();
+  if (v === 'Yes' || v.startsWith('Yes')) return `<span class="badge-yes">${v}</span>`;
+  if (v === 'No') return `<span class="badge-no">No</span>`;
+  if (v === 'N/A' || v === '' || v === '0') return `<span class="badge-na">${v||'—'}</span>`;
+  return v;
+}
+
+const BADGE_COLS = new Set(['HD Display','Gesture Control','CD Player','DVD Player',
+  'Maestro Compatible','HD radio','Screen Mirroring','HDMI Input','HD Cam Support',
+  'Audio Input','Video Output','Alexa Compatible']);
+
+const TABLE_COLS = [
+  'Form Factor','Screen Size','HD Display','CarPlay and Android Auto',
+  'Gesture Control','CD Player','DVD Player','Maestro Compatible','SiriusXM','HD radio',
+  'Screen Mirroring','HDMI Input','Camera Inputs','HD Cam Support','Audio Input',
+  'Video Output','USB Ports','Pre-amp Outputs','Alexa Compatible','Power Output','Audio Formats'
+];
+
+const EXTRA_COLS = new Set([
+  'Screen Mirroring','HDMI Input','Camera Inputs','HD Cam Support',
+  'Audio Input','Video Output','USB Ports','Pre-amp Outputs','Power Output'
+]);
+
+function renderTable() {
+  const tbody = document.getElementById('tableBody');
+  const noRes = document.getElementById('noResults');
+  const countEl = document.getElementById('count');
+
+  tbody.innerHTML = '';
+
+  if (filteredData.length === 0) {
+    noRes.style.display = 'block';
+    countEl.innerHTML = '<strong>0</strong> radios found';
+    return;
+  }
+  noRes.style.display = 'none';
+  countEl.innerHTML = `Showing <strong>${filteredData.length}</strong> of <strong>${allData.length}</strong> radios`;
+
+  filteredData.forEach(row => {
+    const tr = document.createElement('tr');
+    const part = row['Part #'];
+    if (selectedParts.has(part)) tr.classList.add('selected');
+
+    // checkbox
+    const tdCb = document.createElement('td');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = selectedParts.has(part);
+    cb.addEventListener('change', () => toggleCompare(part, cb.checked, tr));
+    tdCb.appendChild(cb);
+    tr.appendChild(tdCb);
+
+    // Part #
+    const tdPart = document.createElement('td');
+    const url = row['URL'];
+    if (url && url.startsWith('http')) {
+      const a = document.createElement('a');
+      a.href = url; a.target = '_blank'; a.textContent = part;
+      tdPart.appendChild(a);
+    } else tdPart.textContent = part;
+    tr.appendChild(tdPart);
+
+    // All other columns
+    TABLE_COLS.forEach(k => {
+      const td = document.createElement('td');
+      if (EXTRA_COLS.has(k)) td.className = 'extra-col';
+      const val = row[k] || '—';
+      if (BADGE_COLS.has(k)) {
+        td.innerHTML = badgeHTML(val);
+      } else {
+        td.textContent = val;
+      }
+      tr.appendChild(td);
+    });
+
+    // Manual
+    const tdM = document.createElement('td');
+    const mu = row['Manual URL'];
+    if (mu && mu.startsWith('http')) {
+      const a = document.createElement('a'); a.href = mu; a.target = '_blank'; a.textContent = 'PDF';
+      tdM.appendChild(a);
+    } else tdM.textContent = '—';
+    tr.appendChild(tdM);
+
+    tbody.appendChild(tr);
+  });
+
+  syncScrollWidth();
+  updateSelectAll();
+}
+
+// ── SELECT ALL ────────────────────────────────────────
+document.getElementById('selectAll').addEventListener('change', function() {
+  const checked = this.checked;
+  filteredData.forEach(r => {
+    const p = r['Part #'];
+    if (checked) selectedParts.add(p);
+    else selectedParts.delete(p);
+  });
+  renderTable();
+  updateComparePanel();
+});
+
+function updateSelectAll() {
+  const sa = document.getElementById('selectAll');
+  const visible = filteredData.map(r => r['Part #']);
+  const allChecked = visible.length > 0 && visible.every(p => selectedParts.has(p));
+  sa.checked = allChecked;
+  sa.indeterminate = !allChecked && visible.some(p => selectedParts.has(p));
+}
+
+// ── COMPARE ───────────────────────────────────────────
+function toggleCompare(part, on, tr) {
+  if (on) selectedParts.add(part);
+  else selectedParts.delete(part);
+  if (tr) tr.classList.toggle('selected', on);
+  updateSelectAll();
+  updateComparePanel();
+}
+
+const COMPARE_FIELDS = [
+  ['Form Factor','Form Factor'],
+  ['Screen Size','Screen Size'],
+  ['HD Display','HD Display'],
+  ['CarPlay / Android Auto','CarPlay and Android Auto'],
+  ['Gesture Control','Gesture Control'],
+  ['CD Player','CD Player'],
+  ['DVD Player','DVD Player'],
+  ['Maestro','Maestro Compatible'],
+  ['SiriusXM','SiriusXM'],
+  ['HD Radio','HD radio'],
+  ['Screen Mirroring','Screen Mirroring'],
+  ['HDMI Input','HDMI Input'],
+  ['Camera Inputs','Camera Inputs'],
+  ['HD Cam Support','HD Cam Support'],
+  ['Audio Input','Audio Input'],
+  ['Video Output','Video Output'],
+  ['USB Ports','USB Ports'],
+  ['Pre-amp Outputs','Pre-amp Outputs'],
+  ['Alexa Compatible','Alexa Compatible'],
+  ['Power Output','Power Output'],
+  ['Audio Formats','Audio Formats']
+];
+
+const HIGHER_BETTER = new Set(['Camera Inputs']);
+
+// Winner logic for compare highlighting
+// 'yes_over_no' = Yes > No; 'largest_screen' = biggest numeric screen; 
+// 'biggest_number' = highest number wins; 'largest_number' = highest extracted number;
+// 'most_formats' = most audio formats wins
+const WINNER_RULES = {
+  'Screen Size': 'largest_screen',
+  'HD Display': 'yes_over_no',
+  'CarPlay and Android Auto': 'carplay_rank',
+  'Gesture Control': 'yes_over_no',
+  'CD Player': 'yes_over_no',
+  'DVD Player': 'yes_over_no',
+  'Maestro Compatible': 'yes_over_no',
+  'SiriusXM': 'yes_over_no',
+  'HD radio': 'yes_over_no',
+  'Screen Mirroring': 'yes_over_no',
+  'HDMI Input': 'yes_over_no',
+  'Camera Inputs': 'biggest_number',
+  'HD Cam Support': 'yes_over_no',
+  'Audio Input': 'yes_over_no',
+  'Video Output': 'yes_over_no',
+  'USB Ports': 'biggest_number',
+  'Pre-amp Outputs': 'largest_number',
+  'Alexa Compatible': 'yes_over_no',
+  'Audio Formats': 'most_formats'
+};
+
+function getWinnerIndices(key, vals) {
+  const rule = WINNER_RULES[key] || 'yes_over_no';
+  if (vals.length < 2) return new Set();
+
+  // Check if all values are the same — no winner if tied
+  if (vals.every(v => v === vals[0])) return new Set();
+
+  if (rule === 'yes_over_no') {
+    const hasYes = vals.some(v => v.startsWith('Yes'));
+    const hasNo = vals.some(v => v === 'No' || v === '0' || v === '' || v === '—');
+    if (hasYes && hasNo) {
+      const winners = new Set();
+      vals.forEach((v, i) => { if (v.startsWith('Yes')) winners.add(i); });
+      return winners;
+    }
+    return new Set();
+  }
+
+  if (rule === 'carplay_rank') {
+    // Wired/Wireless > Wired > No
+    const rankMap = {'Wired / Wireless': 3, 'Wired': 2, 'No': 1};
+    const ranks = vals.map(v => rankMap[v] || 0);
+    const maxR = Math.max(...ranks);
+    if (ranks.filter(r => r === maxR).length === vals.length) return new Set();
+    const winners = new Set();
+    ranks.forEach((r, i) => { if (r === maxR) winners.add(i); });
+    return winners;
+  }
+
+  if (rule === 'largest_screen') {
+    const nums = vals.map(v => {
+      if (v === 'N/A' || !v) return -1;
+      const m = v.match(/[\d.]+/);
+      return m ? parseFloat(m[0]) : -1;
+    });
+    const maxN = Math.max(...nums);
+    if (maxN <= 0 || nums.filter(n => n === maxN).length === vals.length) return new Set();
+    const winners = new Set();
+    nums.forEach((n, i) => { if (n === maxN) winners.add(i); });
+    return winners;
+  }
+
+  if (rule === 'biggest_number') {
+    const nums = vals.map(v => {
+      const m = String(v).match(/\d+/);
+      return m ? parseInt(m[0]) : -1;
+    });
+    const maxN = Math.max(...nums);
+    if (maxN < 0 || nums.filter(n => n === maxN).length === vals.length) return new Set();
+    const winners = new Set();
+    nums.forEach((n, i) => { if (n === maxN) winners.add(i); });
+    return winners;
+  }
+
+  if (rule === 'largest_number') {
+    // Extract the first number (e.g. "3" from "3 (5.0V)") then voltage
+    const scores = vals.map(v => {
+      const m = String(v).match(/([\d.]+)\s*\(([\d.]+)V\)/i);
+      if (m) return parseFloat(m[1]) * 100 + parseFloat(m[2]);
+      const m2 = String(v).match(/[\d.]+/);
+      return m2 ? parseFloat(m2[0]) : -1;
+    });
+    const maxS = Math.max(...scores);
+    if (maxS < 0 || scores.filter(s => s === maxS).length === vals.length) return new Set();
+    const winners = new Set();
+    scores.forEach((s, i) => { if (s === maxS) winners.add(i); });
+    return winners;
+  }
+
+  if (rule === 'most_formats') {
+    const counts = vals.map(v => v ? v.split(',').length : 0);
+    const maxC = Math.max(...counts);
+    if (maxC <= 0 || counts.filter(c => c === maxC).length === vals.length) return new Set();
+    const winners = new Set();
+    counts.forEach((c, i) => { if (c === maxC) winners.add(i); });
+    return winners;
+  }
+
+  return new Set();
+}
+
+function updateComparePanel() {
+  const panel = document.getElementById('comparePanel');
+  const chipsEl = document.getElementById('compareChips');
+  const countEl2 = document.getElementById('compareCount');
+  const n = selectedParts.size;
+
+  if (n === 0) {
+    panel.style.display = 'none';
+    countEl2.style.display = 'none';
+    if (compareExpanded) { compareExpanded = false; toggleCompareBody(false); }
+    return;
+  }
+
+  panel.style.display = 'block';
+  countEl2.style.display = 'inline';
+  countEl2.textContent = `${n} selected for compare`;
+
+  chipsEl.innerHTML = '';
+  [...selectedParts].forEach(part => {
+    const chip = document.createElement('span');
+    chip.className = 'compare-chip';
+    chip.innerHTML = `${part} <span class="x">✕</span>`;
+    chip.addEventListener('click', () => {
+      selectedParts.delete(part);
+      renderTable();
+      updateComparePanel();
+    });
+    chipsEl.appendChild(chip);
+  });
+
+  if (compareExpanded) renderCompareTable();
+}
+
+function renderCompareTable() {
+  const body = document.getElementById('compareBody');
+  const rows = [...selectedParts].map(p => allData.find(r => r['Part #'] === p)).filter(Boolean);
+  if (rows.length === 0) { body.innerHTML = ''; return; }
+
+  let html = '<table class="compare-table"><thead><tr><th>Feature</th>';
+  rows.forEach(r => {
+    const url = r['URL'];
+    const label = url && url.startsWith('http')
+      ? `<a href="${url}" target="_blank" style="color:#fff;">${r['Part #']}</a>`
+      : r['Part #'];
+    html += `<th>${label}<span class="remove-col" data-part="${r['Part #']}">Remove</span></th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  COMPARE_FIELDS.forEach(([label, key]) => {
+    html += `<tr><th>${label}</th>`;
+    const vals = rows.map(r => r[key] || '');
+    const winners = getWinnerIndices(key, vals);
+    vals.forEach((v, i) => {
+      const cls = winners.has(i) ? ' class="best"' : '';
+      html += `<td${cls}>${v || '—'}</td>`;
+    });
+    html += '</tr>';
+  });
+
+  // Manual row
+  html += '<tr><th>Manual</th>';
+  rows.forEach(r => {
+    const mu = r['Manual URL'];
+    html += `<td>${mu && mu.startsWith('http') ? `<a href="${mu}" target="_blank">PDF</a>` : '—'}</td>`;
+  });
+  html += '</tr></tbody></table>';
+
+  body.innerHTML = html;
+
+  body.querySelectorAll('.remove-col').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedParts.delete(btn.dataset.part);
+      renderTable();
+      updateComparePanel();
+    });
+  });
+}
+
+function toggleCompareBody(force) {
+  compareExpanded = typeof force === 'boolean' ? force : !compareExpanded;
+  const body = document.getElementById('compareBody');
+  const btn  = document.getElementById('toggleCompareView');
+  if (compareExpanded) {
+    body.style.display = 'block';
+    btn.textContent = 'Hide Table';
+    renderCompareTable();
+  } else {
+    body.style.display = 'none';
+    btn.textContent = 'Compare';
+  }
+}
+
+document.getElementById('toggleCompareView').addEventListener('click', () => toggleCompareBody());
+document.getElementById('clearCompare').addEventListener('click', () => {
+  selectedParts.clear();
+  compareExpanded = false;
+  toggleCompareBody(false);
+  renderTable();
+  updateComparePanel();
+});
+
+// ── AUTOCOMPLETE ──────────────────────────────────────
+let acIndex = -1;
+const searchEl = document.getElementById('search');
+const acList   = document.getElementById('acList');
+
+function showAC() {
+  const term = searchEl.value.trim().toLowerCase();
+  if (!term) { acList.classList.remove('show'); return; }
+  const seen = new Set();
+  const suggs = [];
+  const addSugg = (val, type) => {
+    const key = type + ':' + val;
+    if (!seen.has(key) && val.toLowerCase().includes(term)) {
+      seen.add(key); suggs.push({val, type});
+    }
+  };
+  allData.forEach(r => addSugg(r['Part #'], 'Part #'));
+  allData.forEach(r => addSugg((r['Form Factor']||'').trim(), 'Form Factor'));
+  allData.forEach(r => addSugg((r['Screen Size']||'').trim(), 'Screen Size'));
+  const top = suggs.slice(0, 8);
+  if (!top.length) { acList.classList.remove('show'); return; }
+
+  acList.innerHTML = top.map((s,i) => {
+    const hi = s.val.replace(new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'), '<em>$1</em>');
+    const tag = s.type !== 'Part #' ? `<span class="ac-tag">${s.type}</span>` : '';
+    return `<div class="ac-item${i===acIndex?' active':''}" data-val="${s.val}">${hi}${tag}</div>`;
+  }).join('');
+  acList.classList.add('show');
+  acList.querySelectorAll('.ac-item').forEach(item => {
+    item.addEventListener('click', () => {
+      searchEl.value = item.dataset.val;
+      acList.classList.remove('show'); acIndex = -1;
+      applyFilters();
+    });
+  });
+}
+
+searchEl.addEventListener('input', () => { acIndex = -1; showAC(); applyFilters(); });
+searchEl.addEventListener('keydown', e => {
+  const items = acList.querySelectorAll('.ac-item');
+  if (!acList.classList.contains('show') || !items.length) return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); acIndex = Math.min(acIndex+1, items.length-1); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); acIndex = Math.max(acIndex-1, 0); }
+  else if (e.key === 'Enter' && acIndex >= 0) {
+    searchEl.value = items[acIndex].dataset.val;
+    acList.classList.remove('show'); acIndex = -1; applyFilters(); return;
+  } else if (e.key === 'Escape') { acList.classList.remove('show'); acIndex = -1; return; }
+  items.forEach((it,i) => it.classList.toggle('active', i===acIndex));
+});
+document.addEventListener('click', e => {
+  if (!searchEl.contains(e.target) && !acList.contains(e.target)) {
+    acList.classList.remove('show'); acIndex = -1;
+  }
+});
+
+// ── SORT ──────────────────────────────────────────────
+document.querySelectorAll('th[data-sort]').forEach(th => {
+  th.addEventListener('click', () => {
+    const k = th.dataset.sort;
+    if (sortKey === k) sortAsc = !sortAsc; else { sortKey = k; sortAsc = true; }
+    document.querySelectorAll('th[data-sort]').forEach(t => {
+      const base = t.dataset.label || t.textContent.replace(/ [▲▼]$/,'');
+      t.dataset.label = base;
+      if (t.dataset.sort === sortKey) {
+        t.textContent = base + (sortAsc?' ▲':' ▼'); t.classList.add('sorted');
+      } else { t.textContent = base; t.classList.remove('sorted'); }
+    });
+    applyFilters();
+  });
+});
+
+// ── CLEAR ─────────────────────────────────────────────
+document.getElementById('clearFilters').addEventListener('click', () => {
+  document.getElementById('search').value = '';
+  Object.keys(FILTER_SELECT_MAP).forEach(id => document.getElementById(id).value = '');
+  document.querySelectorAll('#fAudioFormats input[type="checkbox"]').forEach(cb => cb.checked = false);
+  applyFilters();
+});
+
+// ── FILTER LISTENERS ──────────────────────────────────
+document.getElementById('search').addEventListener('input', applyFilters);
+Object.keys(FILTER_SELECT_MAP).forEach(id =>
+  document.getElementById(id).addEventListener('change', applyFilters)
+);
+document.querySelectorAll('#fAudioFormats input[type="checkbox"]').forEach(cb =>
+  cb.addEventListener('change', applyFilters)
+);
+
+// ── EXTRA FEATURES TOGGLE ─────────────────────────────
+const extraBtn = document.getElementById('extraToggle');
+extraBtn.addEventListener('click', () => {
+  const table = document.getElementById('resultsTable');
+  const showing = table.classList.toggle('extra-visible');
+  extraBtn.textContent = showing ? 'Show Key Features Only' : 'Show All Features';
+  extraBtn.classList.toggle('active', showing);
+  syncScrollWidth();
+});
+
+// ── SCROLL SYNC ───────────────────────────────────────
+const topScroll = document.getElementById('topScroll');
+const topScrollInner = document.getElementById('topScrollInner');
+const tableWrap = document.getElementById('tableWrap');
+
+function syncScrollWidth() {
+  const t = document.getElementById('resultsTable');
+  if (t) topScrollInner.style.width = t.scrollWidth + 'px';
+}
+topScroll.addEventListener('scroll', () => tableWrap.scrollLeft = topScroll.scrollLeft);
+tableWrap.addEventListener('scroll', () => topScroll.scrollLeft = tableWrap.scrollLeft);
+window.addEventListener('resize', syncScrollWidth);
+
+// ── INIT ──────────────────────────────────────────────
+applyFilters();
+setTimeout(syncScrollWidth, 100);
+</script>
+</body>
+</html>
