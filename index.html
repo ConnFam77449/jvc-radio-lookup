@@ -66,11 +66,11 @@
       box-shadow: var(--shadow);
       padding: 14px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      grid-template-columns: repeat(6, 1fr);
       gap: 10px;
       margin-bottom: 10px;
     }
-    .filter-group { display: flex; flex-direction: column; gap: 4px; }
+    .filter-group { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
     .filter-group label,
     .filter-group-label {
       font-size: 0.72em;
@@ -307,14 +307,17 @@
     .btn-extra.active { background: #15803d; color: #fff; }
 
     /* mobile */
+    @media (max-width: 1024px) {
+      .filters { grid-template-columns: repeat(4, 1fr); }
+    }
     @media (max-width: 768px) {
       .scroll-hint { display: block; }
-      .filters { grid-template-columns: 1fr 1fr; }
+      .filters { grid-template-columns: repeat(3, 1fr); }
       th, td { font-size: 0.75em; padding: 7px 9px; }
       .mobile-break { display: block; }
     }
     @media (max-width: 480px) {
-      .filters { grid-template-columns: 1fr; }
+      .filters { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -335,7 +338,7 @@
       </span>
     </div>
 
-    <div class="filter-group" style="grid-column: span 2;">
+    <div class="filter-group">
       <label>Part # / Global Search</label>
       <div class="ac-wrap">
         <input type="text" id="search" placeholder="Search any field..." autocomplete="off" />
@@ -363,16 +366,6 @@
       <label>DVD Player</label>
       <select id="fDVD"><option value="">All</option></select>
     </div>
-    <div class="filter-group" style="grid-column: span 2;">
-      <span class="filter-group-label">Audio Formats (must support all checked)</span>
-      <div class="checkbox-row" id="fAudioFormats">
-        <label class="cb-label"><input type="checkbox" value="MP3" /> MP3</label>
-        <label class="cb-label"><input type="checkbox" value="WMA" /> WMA</label>
-        <label class="cb-label"><input type="checkbox" value="AAC" /> AAC</label>
-        <label class="cb-label"><input type="checkbox" value="WAV" /> WAV</label>
-        <label class="cb-label"><input type="checkbox" value="FLAC" /> FLAC</label>
-      </div>
-    </div>
     <div class="filter-group">
       <label>HD Radio</label>
       <select id="fHDRadio"><option value="">All</option></select>
@@ -396,6 +389,16 @@
     <div class="filter-group">
       <label>Alexa Compatible</label>
       <select id="fAlexa"><option value="">All</option></select>
+    </div>
+    <div class="filter-group" style="grid-column: span 2;">
+      <span class="filter-group-label">Audio Formats (must support all checked)</span>
+      <div class="checkbox-row" id="fAudioFormats">
+        <label class="cb-label"><input type="checkbox" value="MP3" /> MP3</label>
+        <label class="cb-label"><input type="checkbox" value="WMA" /> WMA</label>
+        <label class="cb-label"><input type="checkbox" value="AAC" /> AAC</label>
+        <label class="cb-label"><input type="checkbox" value="WAV" /> WAV</label>
+        <label class="cb-label"><input type="checkbox" value="FLAC" /> FLAC</label>
+      </div>
     </div>
   </div>
 
@@ -1118,3 +1121,4 @@ setTimeout(syncScrollWidth, 100);
 </script>
 </body>
 </html>
+
