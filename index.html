@@ -355,7 +355,7 @@
       <select id="fMaestro"><option value="">All</option></select>
     </div>
     <div class="filter-group">
-      <label>SiriusXM</label>
+      <label>SiriusXM Compatible</label>
       <select id="fSiriusXM"><option value="">All</option></select>
     </div>
     <div class="filter-group">
@@ -414,20 +414,19 @@
 
   <!-- COMPARE PANEL -->
   <div id="comparePanel" style="display:none; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 10px; overflow: hidden;">
-    <div class="compare-header">
-      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+    <div class="compare-header" style="flex-direction:column; align-items:flex-start;">
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; width:100%;">
         <h2>Compare Selected</h2>
-        <div class="compare-bar" id="compareChips"></div>
-      </div>
-      <div class="compare-header-right">
         <button class="compare-toggle-btn" id="toggleCompareView">Compare</button>
         <button class="btn btn-red" id="clearCompare" style="padding:5px 12px; font-size:0.78em;">Clear All</button>
       </div>
+      <div class="compare-bar" id="compareChips" style="margin-top:6px;"></div>
     </div>
     <div class="compare-body" id="compareBody" style="display:none;"></div>
   </div>
 
   <div class="scroll-hint">&larr; Swipe left/right to see all columns &rarr;</div>
+  <div style="margin-bottom:4px; font-size:0.92em; font-weight:900; color:var(--red);">&#9660;&#9660;&#9660; Check the Boxes Below to Compare Part Numbers.</div>
   <div class="top-scroll" id="topScroll"><div class="top-scroll-inner" id="topScrollInner"></div></div>
 
   <div class="table-wrap" id="tableWrap">
@@ -437,16 +436,18 @@
           <th><input type="checkbox" id="selectAll" title="Select all visible" /></th>
           <th data-sort="Part #">Part #</th>
           <th data-sort="Form Factor">Form Factor</th>
-          <th data-sort="Screen Size">Screen Size</th>
-          <th data-sort="HD Display">HD Display</th>
           <th data-sort="CarPlay and Android Auto">CarPlay / Android Auto</th>
-          <th data-sort="Gesture Control">Gesture</th>
-          <th data-sort="CD Player">CD</th>
-          <th data-sort="DVD Player">DVD</th>
           <th data-sort="Maestro Compatible">Maestro</th>
           <th data-sort="SiriusXM">SiriusXM</th>
-          <th data-sort="HD radio">HD Radio</th>
+          <th data-sort="CD Player">CD</th>
+          <th data-sort="DVD Player">DVD</th>
+          <th data-sort="HD Display">HD Display</th>
           <th data-sort="Screen Mirroring">Screen Mirroring</th>
+          <th data-sort="Screen Size">Screen Size</th>
+          <th data-sort="HD radio">HD Radio</th>
+          <th data-sort="Alexa Compatible">Alexa Compatible</th>
+          <th data-sort="Gesture Control">Gesture Control</th>
+          <th data-sort="Audio Formats">Audio Formats</th>
           <th data-sort="HDMI Input" class="extra-col">HDMI Input</th>
           <th data-sort="Camera Inputs" class="extra-col">Camera Input(s)</th>
           <th data-sort="HD Cam Support" class="extra-col">HD Cam</th>
@@ -454,9 +455,7 @@
           <th data-sort="Video Output" class="extra-col">Video Out</th>
           <th data-sort="USB Ports" class="extra-col">USB Ports</th>
           <th data-sort="Pre-amp Outputs" class="extra-col">Pre-amp Out</th>
-          <th data-sort="Alexa Compatible">Alexa Compatible</th>
           <th data-sort="Power Output" class="extra-col">Power</th>
-          <th data-sort="Audio Formats">Audio Formats</th>
           <th>Manual</th>
         </tr>
       </thead>
@@ -641,6 +640,11 @@ function applyFilters() {
       let va = a[sortKey]||'', vb = b[sortKey]||'';
       const na = parseFloat(va), nb = parseFloat(vb);
       if (!isNaN(na) && !isNaN(nb) && na !== nb) return sortAsc ? na-nb : nb-na;
+      // Yes/No columns: Yes before No in ascending
+      const vaNo = va === 'No', vbNo = vb === 'No';
+      const vaYes = va === 'Yes' || va.startsWith('Yes'), vbYes = vb === 'Yes' || vb.startsWith('Yes');
+      if (vaYes && vbNo) return sortAsc ? -1 : 1;
+      if (vaNo && vbYes) return sortAsc ? 1 : -1;
       va = va.toString().toLowerCase(); vb = vb.toString().toLowerCase();
       return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
     });
@@ -662,10 +666,11 @@ const BADGE_COLS = new Set(['HD Display','Gesture Control','CD Player','DVD Play
   'Audio Input','Video Output','Alexa Compatible']);
 
 const TABLE_COLS = [
-  'Form Factor','Screen Size','HD Display','CarPlay and Android Auto',
-  'Gesture Control','CD Player','DVD Player','Maestro Compatible','SiriusXM','HD radio',
-  'Screen Mirroring','HDMI Input','Camera Inputs','HD Cam Support','Audio Input',
-  'Video Output','USB Ports','Pre-amp Outputs','Alexa Compatible','Power Output','Audio Formats'
+  'Form Factor','CarPlay and Android Auto','Maestro Compatible','SiriusXM',
+  'CD Player','DVD Player','HD Display','Screen Mirroring','Screen Size','HD radio',
+  'Alexa Compatible','Gesture Control','Audio Formats',
+  'HDMI Input','Camera Inputs','HD Cam Support','Audio Input',
+  'Video Output','USB Ports','Pre-amp Outputs','Power Output'
 ];
 
 const EXTRA_COLS = new Set([
@@ -1121,4 +1126,3 @@ setTimeout(syncScrollWidth, 100);
 </script>
 </body>
 </html>
-
