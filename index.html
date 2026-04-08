@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex, nofollow" />
   <meta name="description" content="Find the perfect JVC car radio for your needs. Filter by screen size, HD display, CarPlay and Android Auto, gesture control, CD/DVD player, Maestro, SiriusXM, HD Radio, Alexa, and audio formats. Compare models side-by-side with winners highlighted." />
   <title>JVC Radio Lookup</title>
   <style>
@@ -298,13 +299,13 @@
     .extra-col { display: none; }
     .extra-visible .extra-col { display: table-cell; }
     .btn-extra {
-      padding: 6px 14px; border-radius: 7px; border: 1px solid var(--green);
+      padding: 6px 14px; border-radius: 7px; border: 1px solid var(--blue);
       font-size: 0.82em; font-weight: 600; cursor: pointer;
-      background: var(--green); color: #fff;
+      background: var(--blue); color: #fff;
       transition: background .15s;
     }
-    .btn-extra:hover { background: #15803d; }
-    .btn-extra.active { background: #15803d; color: #fff; }
+    .btn-extra:hover { background: var(--blue-dark); }
+    .btn-extra.active { background: var(--blue-dark); color: #fff; }
 
     /* mobile */
     @media (max-width: 1024px) {
@@ -406,9 +407,9 @@
   <div class="count-bar">
     <span id="count">Showing all entries</span>
     <span style="font-size:1.1em; color:var(--red); font-weight:900;">&#9650;&#9650;&#9650; You can use <span style="text-decoration:underline; text-underline-offset:3px;">Any</span> or <span style="text-decoration:underline; text-underline-offset:3px;">All</span> the filters above to narrow results below &#9650;&#9650;&#9650;</span>
-    <div style="display:flex; align-items:center; gap:8px;">
+    <div id="extraBtnHome" style="display:flex; align-items:center; gap:8px;">
       <button class="btn-extra" id="extraToggle">Show More Features</button>
-      <span id="compareCount" style="display:none; color: var(--blue); font-weight: 600;"></span>
+      <span id="compareCount" style="display:none; color: var(--text-light); font-weight: 600;"></span>
     </div>
   </div>
 
@@ -418,11 +419,12 @@
       <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; width:100%;">
         <h2>Compare Selected</h2>
         <button class="compare-toggle-btn" id="toggleCompareView">Compare</button>
-        <button class="btn btn-red" id="clearCompare" style="padding:5px 12px; font-size:0.78em;">Clear All</button>
+        <button class="btn btn-red" id="clearCompare" style="padding:5px 12px; font-size:0.78em;">Clear Comparison</button>
       </div>
       <div class="compare-bar" id="compareChips" style="margin-top:6px;"></div>
     </div>
     <div class="compare-body" id="compareBody" style="display:none;"></div>
+    <div id="extraToggleCompare" style="display:none; padding:16px 16px 20px; margin-top:10px; margin-bottom:10px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;"></div>
   </div>
 
   <div class="scroll-hint">&larr; Swipe left/right to see all columns &rarr;</div>
@@ -441,9 +443,9 @@
           <th data-sort="SiriusXM">SiriusXM</th>
           <th data-sort="CD Player">CD</th>
           <th data-sort="DVD Player">DVD</th>
-          <th data-sort="HD Display">HD Display</th>
           <th data-sort="Screen Mirroring">Screen Mirroring</th>
           <th data-sort="Screen Size">Screen Size</th>
+          <th data-sort="HD Display">HD Display</th>
           <th data-sort="HD radio">HD Radio</th>
           <th data-sort="Alexa Compatible">Alexa Compatible</th>
           <th data-sort="Gesture Control">Gesture Control</th>
@@ -456,6 +458,7 @@
           <th data-sort="USB Ports" class="extra-col">USB Ports</th>
           <th data-sort="Pre-amp Outputs" class="extra-col">Pre-amp Out</th>
           <th data-sort="Power Output" class="extra-col">Power</th>
+          <th data-sort="MSRP">MSRP</th>
           <th>Manual</th>
         </tr>
       </thead>
@@ -464,32 +467,71 @@
   </div>
   <div class="no-results" id="noResults" style="display:none;">No matching radios found.</div>
 
+  <div style="text-align:center; padding:16px 0 8px; font-size:0.78em; color:var(--text-muted);">
+    <span id="copyrightText" style="cursor:default; user-select:none;">&copy; 2026 JVC Radio Lookup. All rights reserved.</span>
+    <div id="easterEgg" style="display:none; margin-top:10px; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:8px; max-width:500px; margin-left:auto; margin-right:auto;">
+      <div style="text-align:center; font-size:0.85em; font-weight:700; color:var(--text-muted); margin-bottom:8px;">Updated: 4-7-26</div>
+      <table style="width:100%; border-collapse:collapse; font-size:1.1em;">
+        <thead>
+          <tr style="background:var(--blue); color:#fff;">
+            <th style="padding:8px 12px; text-align:center;">Part #</th>
+            <th style="padding:8px 12px; text-align:center;">Dealer</th>
+            <th style="padding:8px 12px; text-align:center;">MSRP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-Z1000AW</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$1,150.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$1,699.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-Z800AW</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$840.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$1,249.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-Z1001W</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$817.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$1,599.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-Z900W</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$370.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$649.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-V960BW</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$528.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$999.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-M875BW</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$445.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$849.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-M795BW</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$327.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$579.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-V660BT</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$266.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$479.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-M695BW</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$266.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$479.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-M690BW</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$245.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$449.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-M595BT</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$224.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$429.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-M590BT</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$203.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$399.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-M180BT</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$138.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$249.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-X850BTS</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$91.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$169.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KD-X480BHS</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$120.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$209.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KD-X380BTS</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$85.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$139.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KD-X280BT</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$80.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$129.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KD-T925BTS</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$130.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$219.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KD-T920BTS</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$102.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$179.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KD-T720BT</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$98.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$169.00</td></tr>
+          <tr><td style="padding:6px 12px; text-align:center;">KW-R950BTS</td><td style="padding:6px 12px; text-align:center;">$100.00</td><td style="padding:6px 12px; text-align:center;">$189.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <script>
 const rawData = [
-{"Part #":"KW-M180BT","Form Factor":"Media Receiver (Double DIN)","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"No","HD radio":"No","Screen Mirroring":"Android (USB)","HDMI Input":"No","Camera Inputs":"1","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"2 (2.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3","URL":"https://www.us.jvc.com/car/multimedia/kw_m180bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1095-00b.pdf"},
-{"Part #":"KW-X850BTS","Form Factor":"Double DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kw_x850bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3844-00.pdf"},
-{"Part #":"KD-X280BT","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"No","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_x280bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3840-00.pdf"},
-{"Part #":"KW-R950BTS","Form Factor":"Double DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"Yes","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"No","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kw_r950bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3843-00.pdf"},
-{"Part #":"KD-T920BTS","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"Yes","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_t920bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3880-00.pdf"},
-{"Part #":"KD-T720BT","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"Yes","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"No","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_t720bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3880-00.pdf"},
-{"Part #":"KW-M695BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"Android (WiFi)","HDMI Input":"No","Camera Inputs":"2","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV","URL":"https://www.us.jvc.com/car/multimedia/kw_m695bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1160_ref_K_En_20b.pdf"},
-{"Part #":"KW-M690BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (WiFi)","HDMI Input":"No","Camera Inputs":"2","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV","URL":"https://www.us.jvc.com/car/multimedia/kw_m690bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1160_ref_K_En_20b.pdf"},
-{"Part #":"KW-Z1000AW","Form Factor":"Direct Replacement","Screen Size":"10.1\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes (360L Ready)","HD radio":"Yes","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"Yes","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/directreplacement/kw_z1000aw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1194_ref_K_En_00b.pdf"},
-{"Part #":"KW-Z800AW","Form Factor":"Direct Replacement","Screen Size":"8.0\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes (360L Ready)","HD radio":"Yes","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"Yes","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/directreplacement/kw_z800aw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1194_ref_K_En_00b.pdf"},
-{"Part #":"KW-Z1001W","Form Factor":"Floating Screen (Single DIN Chassis)","Screen Size":"10.1\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes (360L Ready)","HD radio":"Yes","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"Yes","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_z1001w/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1194_ref_K_En_00b.pdf"},
-{"Part #":"KW-Z900W","Form Factor":"Floating Screen (Single DIN Chassis)","Screen Size":"9.0\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"2","HD Cam Support":"Yes","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, AAC, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_z900w/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1214_ref_K_En_20.pdf"},
-{"Part #":"KW-M795BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.92\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"2","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV","URL":"https://www.us.jvc.com/car/multimedia/kw_m795bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1208_ref_K_En_20.pdf"},
-{"Part #":"KW-V660BT","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired","Gesture Control":"No","CD Player":"Yes","DVD Player":"Yes","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (USB)","HDMI Input":"Yes","Camera Inputs":"2","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_v660bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5H-0357-03_K_EnFrEs.pdf"},
-{"Part #":"KW-M595BT","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (USB)","HDMI Input":"No","Camera Inputs":"1","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"http://www.us.jvc.com/car/multimedia/kw_m595bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1158-30b.pdf"},
-{"Part #":"KW-M590BT","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (USB)","HDMI Input":"No","Camera Inputs":"1","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/multimedia/kw_m590bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1158-30b.pdf"},
-{"Part #":"KW-X855BTS","Form Factor":"Double DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front & 1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kw_x855bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3844-00.pdf"},
-{"Part #":"KD-X380BTS","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_x380bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3881-00.pdf"},
-{"Part #":"KD-T925BTS","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"Yes","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_t925bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3880-00.pdf"},
-{"Part #":"KW-M875BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (5.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, AAC, WAV, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_m875bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-0861_ref_E_En_00b.pdf"},
-{"Part #":"KD-X480BHS","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"3 (5.0V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA, FLAC","URL":"https://www.jvc.com/usa/car-entertainment/audio-receivers/kd-x480bhs/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3881-00.pdf"},
-{"Part #":"KW-V960BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"Yes","DVD Player":"Yes","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (5.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_v960bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/IM405_ref_K_En_11.pdf"}
+{"Part #":"KW-M180BT","Form Factor":"Media Receiver (Double DIN)","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"No","HD radio":"No","Screen Mirroring":"Android (USB)","HDMI Input":"No","Camera Inputs":"1","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"2 (2.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3","URL":"https://www.us.jvc.com/car/multimedia/kw_m180bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1095-00b.pdf","MSRP":"249.00"},
+{"Part #":"KW-X850BTS","Form Factor":"Double DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kw_x850bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3844-00.pdf","MSRP":"169.00"},
+{"Part #":"KD-X280BT","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"No","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_x280bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3840-00.pdf","MSRP":"129.00"},
+{"Part #":"KW-R950BTS","Form Factor":"Double DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"Yes","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"No","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kw_r950bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3843-00.pdf","MSRP":"189.00"},
+{"Part #":"KD-T920BTS","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"Yes","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_t920bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3880-00.pdf","MSRP":"179.00"},
+{"Part #":"KD-T720BT","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"Yes","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"No","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"2 (2.5V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_t720bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3880-00.pdf","MSRP":"169.00"},
+{"Part #":"KW-M695BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"Android (WiFi)","HDMI Input":"No","Camera Inputs":"2","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV","URL":"https://www.us.jvc.com/car/multimedia/kw_m695bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1160_ref_K_En_20b.pdf","MSRP":"479.00"},
+{"Part #":"KW-M690BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (WiFi)","HDMI Input":"No","Camera Inputs":"2","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV","URL":"https://www.us.jvc.com/car/multimedia/kw_m690bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1160_ref_K_En_20b.pdf","MSRP":"449.00"},
+{"Part #":"KW-Z1000AW","Form Factor":"Direct Replacement","Screen Size":"10.1\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes (360L Ready)","HD radio":"Yes","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"Yes","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/directreplacement/kw_z1000aw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1194_ref_K_En_00b.pdf","MSRP":"1699.00"},
+{"Part #":"KW-Z800AW","Form Factor":"Direct Replacement","Screen Size":"8.0\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes (360L Ready)","HD radio":"Yes","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"Yes","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/directreplacement/kw_z800aw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1194_ref_K_En_00b.pdf","MSRP":"1249.00"},
+{"Part #":"KW-Z1001W","Form Factor":"Floating Screen (Single DIN Chassis)","Screen Size":"10.1\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes (360L Ready)","HD radio":"Yes","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"Yes","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_z1001w/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1194_ref_K_En_00b.pdf","MSRP":"1599.00"},
+{"Part #":"KW-Z900W","Form Factor":"Floating Screen (Single DIN Chassis)","Screen Size":"9.0\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"2","HD Cam Support":"Yes","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, AAC, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_z900w/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1214_ref_K_En_20.pdf","MSRP":"649.00"},
+{"Part #":"KW-M795BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.92\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"2","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV","URL":"https://www.us.jvc.com/car/multimedia/kw_m795bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1208_ref_K_En_20.pdf","MSRP":"579.00"},
+{"Part #":"KW-V660BT","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired","Gesture Control":"No","CD Player":"Yes","DVD Player":"Yes","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (USB)","HDMI Input":"Yes","Camera Inputs":"2","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_v660bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5H-0357-03_K_EnFrEs.pdf","MSRP":"479.00"},
+{"Part #":"KW-M595BT","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (USB)","HDMI Input":"No","Camera Inputs":"1","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"http://www.us.jvc.com/car/multimedia/kw_m595bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1158-30b.pdf","MSRP":"429.00"},
+{"Part #":"KW-M590BT","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (USB)","HDMI Input":"No","Camera Inputs":"1","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/multimedia/kw_m590bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1158-30b.pdf","MSRP":"399.00"},
+{"Part #":"KW-X855BTS","Form Factor":"Double DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front & 1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kw_x855bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3844-00.pdf","MSRP":"169.00"},
+{"Part #":"KD-X380BTS","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_x380bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3881-00.pdf","MSRP":"139.00"},
+{"Part #":"KD-T925BTS","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"Yes","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_t925bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3880-00.pdf","MSRP":"219.00"},
+{"Part #":"KW-M875BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (5.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, AAC, WAV, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_m875bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-0861_ref_E_En_00b.pdf","MSRP":"849.00"},
+{"Part #":"KD-X480BHS","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"3 (5.0V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA, FLAC","URL":"https://www.jvc.com/usa/car-entertainment/audio-receivers/kd-x480bhs/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3881-00.pdf","MSRP":"209.00"},
+{"Part #":"KW-V960BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"Yes","DVD Player":"Yes","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (5.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_v960bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/IM405_ref_K_En_11.pdf","MSRP":"999.00"}
 ];
 
 // ── STATE ─────────────────────────────────────────────
@@ -667,10 +709,10 @@ const BADGE_COLS = new Set(['HD Display','Gesture Control','CD Player','DVD Play
 
 const TABLE_COLS = [
   'Form Factor','CarPlay and Android Auto','Maestro Compatible','SiriusXM',
-  'CD Player','DVD Player','HD Display','Screen Mirroring','Screen Size','HD radio',
+  'CD Player','DVD Player','Screen Mirroring','Screen Size','HD Display','HD radio',
   'Alexa Compatible','Gesture Control','Audio Formats',
   'HDMI Input','Camera Inputs','HD Cam Support','Audio Input',
-  'Video Output','USB Ports','Pre-amp Outputs','Power Output'
+  'Video Output','USB Ports','Pre-amp Outputs','Power Output','MSRP'
 ];
 
 const EXTRA_COLS = new Set([
@@ -724,6 +766,8 @@ function renderTable() {
       const val = row[k] || '—';
       if (BADGE_COLS.has(k)) {
         td.innerHTML = badgeHTML(val);
+      } else if (k === 'MSRP' && val !== '—') {
+        td.textContent = '$' + parseFloat(val).toFixed(2);
       } else {
         td.textContent = val;
       }
@@ -796,7 +840,8 @@ const COMPARE_FIELDS = [
   ['Pre-amp Outputs','Pre-amp Outputs'],
   ['Alexa Compatible','Alexa Compatible'],
   ['Power Output','Power Output'],
-  ['Audio Formats','Audio Formats']
+  ['Audio Formats','Audio Formats'],
+  ['MSRP','MSRP']
 ];
 
 const HIGHER_BETTER = new Set(['Camera Inputs']);
@@ -824,7 +869,8 @@ const WINNER_RULES = {
   'USB Ports': 'biggest_number',
   'Pre-amp Outputs': 'largest_number',
   'Alexa Compatible': 'yes_over_no',
-  'Audio Formats': 'most_formats'
+  'Audio Formats': 'most_formats',
+  'MSRP': 'lowest_price'
 };
 
 function getWinnerIndices(key, vals) {
@@ -902,6 +948,15 @@ function getWinnerIndices(key, vals) {
     if (maxC <= 0 || counts.filter(c => c === maxC).length === vals.length) return new Set();
     const winners = new Set();
     counts.forEach((c, i) => { if (c === maxC) winners.add(i); });
+    return winners;
+  }
+
+  if (rule === 'lowest_price') {
+    const nums = vals.map(v => { const m = String(v).match(/[\d.]+/); return m ? parseFloat(m[0]) : Infinity; });
+    const minN = Math.min(...nums);
+    if (minN === Infinity || nums.filter(n => n === minN).length === vals.length) return new Set();
+    const winners = new Set();
+    nums.forEach((n, i) => { if (n === minN) winners.add(i); });
     return winners;
   }
 
@@ -990,13 +1045,23 @@ function toggleCompareBody(force) {
   compareExpanded = typeof force === 'boolean' ? force : !compareExpanded;
   const body = document.getElementById('compareBody');
   const btn  = document.getElementById('toggleCompareView');
+  const extraCompare = document.getElementById('extraToggleCompare');
+  const extraBtn = document.getElementById('extraToggle');
+  const compareCountEl = document.getElementById('compareCount');
+  const countBarHome = document.getElementById('extraBtnHome');
   if (compareExpanded) {
     body.style.display = 'block';
-    btn.textContent = 'Hide Table';
+    btn.textContent = 'Hide Comparison';
+    extraCompare.style.display = 'flex';
+    extraCompare.appendChild(compareCountEl);
+    extraCompare.appendChild(extraBtn);
     renderCompareTable();
   } else {
     body.style.display = 'none';
     btn.textContent = 'Compare';
+    extraCompare.style.display = 'none';
+    countBarHome.insertBefore(extraBtn, countBarHome.firstChild);
+    countBarHome.appendChild(compareCountEl);
   }
 }
 
@@ -1123,6 +1188,15 @@ window.addEventListener('resize', syncScrollWidth);
 // ── INIT ──────────────────────────────────────────────
 applyFilters();
 setTimeout(syncScrollWidth, 100);
+
+// ── EASTER EGG ────────────────────────────────────────
+let eggClicks = 0;
+document.getElementById('copyrightText').addEventListener('click', () => {
+  eggClicks++;
+  if (eggClicks >= 10) {
+    document.getElementById('easterEgg').style.display = 'block';
+  }
+});
 </script>
 </body>
 </html>
