@@ -9,388 +9,118 @@
   <title>JVC Radio Lookup</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --blue: #1e40af;
-      --blue-dark: #1e3a8a;
-      --blue-light: #eff6ff;
-      --blue-mid: #3b82f6;
-      --red: #dc2626;
-      --red-dark: #b91c1c;
-      --green: #16a34a;
-      --green-light: #f0fdf4;
-      --border: #e5e7eb;
-      --text: #111827;
-      --text-muted: #6b7280;
-      --text-light: #9ca3af;
-      --bg: #f3f4f6;
-      --surface: #ffffff;
+      --blue: #1e40af; --blue-dark: #1e3a8a; --blue-light: #eff6ff; --blue-mid: #3b82f6;
+      --red: #dc2626; --red-dark: #b91c1c; --green: #16a34a; --green-light: #f0fdf4;
+      --border: #e5e7eb; --text: #111827; --text-muted: #6b7280; --text-light: #9ca3af;
+      --bg: #f3f4f6; --surface: #ffffff;
       --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
       --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
       --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
-
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; padding: 12px; display: flex; flex-direction: column; align-items: center; }
     .container { width: 100%; max-width: 2200px; }
-
-    /* ── HEADER ── */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    h1 {
-      font-size: clamp(1.2rem, 3.5vw, 1.6rem);
-      font-weight: 700;
-      color: var(--blue);
-      letter-spacing: -0.02em;
-    }
+    .header { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+    h1 { font-size: clamp(1.2rem, 3.5vw, 1.6rem); font-weight: 700; color: var(--blue); letter-spacing: -0.02em; }
     h1 span { color: var(--text-muted); font-weight: 400; font-size: 0.75em; margin-left: 8px; }
-
-    /* ── FILTERS ── */
-    .filters {
-      background: var(--surface);
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-      padding: 14px;
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 10px;
-      margin-bottom: 10px;
-    }
+    .filters { background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); padding: 14px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 10px; }
     .filter-group { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-    .filter-group label,
-    .filter-group-label {
-      font-size: 0.72em;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: none;
-      letter-spacing: 0.02em;
-    }
-    .filter-group input:not([type="checkbox"]),
-    .filter-group select {
-      width: 100%;
-      padding: 7px 10px;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      font-size: 0.85em;
-      color: var(--text);
-      background: var(--surface);
-      transition: border-color .15s, box-shadow .15s;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-    .filter-group select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 8px center;
-      padding-right: 28px;
-    }
-    .filter-group input:focus,
-    .filter-group select:focus {
-      outline: none;
-      border-color: var(--blue-mid);
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
-    }
-
-    /* checkbox row */
-    .checkbox-row {
-      display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
-      padding: 7px 10px;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      background: var(--surface);
-    }
-    .cb-label {
-      display: flex; align-items: center; gap: 4px;
-      font-size: 0.85em; color: var(--text);
-      cursor: pointer; user-select: none;
-    }
-    .cb-label input[type="checkbox"] {
-      width: 14px; height: 14px;
-      accent-color: var(--blue);
-    }
-
-    /* autocomplete */
+    .filter-group label, .filter-group-label { font-size: 0.72em; font-weight: 600; color: var(--text-muted); letter-spacing: 0.02em; }
+    .filter-group input:not([type="checkbox"]), .filter-group select { width: 100%; padding: 7px 10px; border: 1px solid var(--border); border-radius: 7px; font-size: 0.85em; color: var(--text); background: var(--surface); transition: border-color .15s, box-shadow .15s; -webkit-appearance: none; appearance: none; }
+    .filter-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; padding-right: 28px; }
+    .filter-group input:focus, .filter-group select:focus { outline: none; border-color: var(--blue-mid); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+    .checkbox-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 7px 10px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface); }
+    .cb-label { display: flex; align-items: center; gap: 4px; font-size: 0.85em; color: var(--text); cursor: pointer; user-select: none; }
+    .cb-label input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--blue); }
     .ac-wrap { position: relative; }
-    .ac-list {
-      position: absolute; top: calc(100% + 2px); left: 0; right: 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      box-shadow: var(--shadow-md);
-      max-height: 220px; overflow-y: auto;
-      z-index: 200; display: none;
-    }
+    .ac-list { position: absolute; top: calc(100% + 2px); left: 0; right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-md); max-height: 220px; overflow-y: auto; z-index: 200; display: none; }
     .ac-list.show { display: block; }
-    .ac-item {
-      padding: 8px 12px; font-size: 0.83em; cursor: pointer;
-      border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: center;
-    }
+    .ac-item { padding: 8px 12px; font-size: 0.83em; cursor: pointer; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: center; }
     .ac-item:last-child { border-bottom: none; }
     .ac-item:hover, .ac-item.active { background: var(--blue-light); }
     .ac-item em { font-style: normal; color: var(--blue); font-weight: 600; }
-    .ac-tag {
-      font-size: 0.75em; color: var(--text-muted);
-      background: var(--bg); border-radius: 4px; padding: 1px 6px;
-    }
-
-    /* filter actions row */
-    .filter-actions {
-      grid-column: 1 / -1;
-      display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
-    }
-    .btn {
-      padding: 8px 16px; border-radius: 7px; border: none;
-      font-size: 0.85em; font-weight: 600; cursor: pointer; transition: background .15s, transform .1s;
-    }
+    .ac-tag { font-size: 0.75em; color: var(--text-muted); background: var(--bg); border-radius: 4px; padding: 1px 6px; }
+    .filter-actions { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .btn { padding: 8px 16px; border-radius: 7px; border: none; font-size: 0.85em; font-weight: 600; cursor: pointer; transition: background .15s, transform .1s; }
     .btn:active { transform: scale(0.97); }
     .btn-red { background: var(--red); color: #fff; }
     .btn-red:hover { background: var(--red-dark); }
-    .btn-blue { background: var(--blue); color: #fff; }
-    .btn-blue:hover { background: var(--blue-dark); }
-
-    /* count bar */
-    .count-bar {
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 8px;
-      margin-bottom: 8px;
-      font-size: 0.84em; color: var(--text-muted);
-    }
+    .count-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; font-size: 0.84em; color: var(--text-muted); }
     .count-bar strong { color: var(--text); }
-
-    /* ── TABLE ── */
     .scroll-hint { display: none; font-size: 0.75em; color: var(--text-light); text-align: center; margin-bottom: 6px; }
     .top-scroll { width: 100%; overflow-x: auto; overflow-y: hidden; height: 10px; background: var(--surface); border-radius: 10px 10px 0 0; }
     .top-scroll-inner { height: 1px; }
-    .table-wrap {
-      width: 100%; overflow-x: auto;
-      background: var(--surface);
-      border-radius: 0 0 12px 12px;
-      box-shadow: var(--shadow);
-      -webkit-overflow-scrolling: touch;
-    }
+    .table-wrap { width: 100%; overflow-x: auto; background: var(--surface); border-radius: 0 0 12px 12px; box-shadow: var(--shadow); -webkit-overflow-scrolling: touch; }
     table { width: max-content; min-width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.83em; }
     th, td { padding: 9px 12px; text-align: center; border-bottom: 1px solid var(--border); white-space: nowrap; }
-    th {
-      background: var(--blue);
-      color: #fff;
-      font-weight: 700;
-      font-size: 0.9em;
-      text-transform: none;
-      letter-spacing: 0.02em;
-      cursor: pointer;
-      position: sticky; top: 0; z-index: 2;
-      user-select: none;
-    }
+    th { background: var(--blue); color: #fff; font-weight: 700; font-size: 0.9em; cursor: pointer; position: sticky; top: 0; z-index: 2; user-select: none; }
     th:hover { background: var(--blue-dark); }
     th.sorted { text-decoration: underline; text-underline-offset: 3px; }
-    th:first-child, td:first-child {
-      position: sticky; left: 0; z-index: 1;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      padding: 9px 10px;
-      text-align: center;
-    }
+    th:first-child, td:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface); border-right: 1px solid var(--border); padding: 9px 10px; text-align: center; }
     th:first-child { z-index: 3; background: var(--blue); }
-    th:nth-child(2), td:nth-child(2) {
-      position: sticky; left: 41px; z-index: 1;
-      background: var(--surface);
-      border-right: 2px solid var(--border);
-    }
+    th:nth-child(2), td:nth-child(2) { position: sticky; left: 41px; z-index: 1; background: var(--surface); border-right: 2px solid var(--border); }
     th:nth-child(2) { z-index: 3; background: var(--blue); }
     tr:hover td { background: #f8faff; }
-    tr:hover td:first-child,
-    tr:hover td:nth-child(2) { background: #eef3ff; }
+    tr:hover td:first-child, tr:hover td:nth-child(2) { background: #eef3ff; }
     tr.selected td { background: #eff6ff !important; }
-    tr.selected td:first-child,
-    tr.selected td:nth-child(2) { background: #dbeafe !important; }
+    tr.selected td:first-child, tr.selected td:nth-child(2) { background: #dbeafe !important; }
     a { color: var(--blue); text-decoration: underline; font-weight: 700; }
-    a:hover { text-decoration: underline; }
     .no-results { text-align: center; padding: 48px; color: var(--text-muted); font-size: 0.95em; }
-
-    input[type="checkbox"] {
-      width: 15px; height: 15px; cursor: pointer;
-      accent-color: var(--blue);
-    }
-
-    /* yes/no badges */
+    input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-color: var(--blue); }
     .badge-yes { background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 10px; font-size: 0.82em; font-weight: 600; }
     .badge-no { background: #fee2e2; color: #b91c1c; padding: 2px 8px; border-radius: 10px; font-size: 0.82em; font-weight: 600; }
     .badge-na { background: #f3f4f6; color: #6b7280; padding: 2px 8px; border-radius: 10px; font-size: 0.82em; font-weight: 600; }
-
-    /* ── COMPARE PANEL ── */
-    .compare-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 16px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+    .compare-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 10px; flex-wrap: wrap; }
     .compare-header h2 { font-size: 0.95em; font-weight: 700; color: var(--blue); }
-    .compare-header-right { display: flex; align-items: center; gap: 8px; }
-    .compare-toggle-btn {
-      font-size: 0.78em; padding: 5px 12px; border-radius: 6px;
-      background: var(--green); color: #fff; border: none;
-      cursor: pointer; font-weight: 600;
-    }
+    .compare-toggle-btn { font-size: 0.78em; padding: 5px 12px; border-radius: 6px; background: var(--green); color: #fff; border: none; cursor: pointer; font-weight: 600; }
     .compare-toggle-btn:hover { background: #15803d; }
-
     .compare-body { overflow: auto; flex: 1; padding: 12px 16px; }
     .compare-table { border-collapse: collapse; min-width: 100%; font-size: 0.82em; }
-    .compare-table th, .compare-table td {
-      padding: 7px 14px; border: 1px solid var(--border);
-      text-align: left; white-space: nowrap;
-    }
-    .compare-table thead th {
-      background: var(--blue); color: #fff; font-weight: 700;
-      position: sticky; top: 0;
-      font-size: 1em; text-transform: none; letter-spacing: 0;
-      cursor: default; text-align: center;
-    }
+    .compare-table th, .compare-table td { padding: 7px 14px; border: 1px solid var(--border); text-align: left; white-space: nowrap; }
+    .compare-table thead th { background: var(--blue); color: #fff; font-weight: 700; position: sticky; top: 0; font-size: 1em; cursor: default; text-align: center; }
     .compare-table thead th:first-child { background: var(--blue-dark); }
-    .compare-table tbody th {
-      background: var(--bg); color: var(--text);
-      font-weight: 700; font-size: 0.9em;
-      text-transform: none; letter-spacing: 0.02em;
-      position: sticky; left: 0; z-index: 1;
-      cursor: default; text-align: center;
-    }
+    .compare-table tbody th { background: var(--bg); color: var(--text); font-weight: 700; font-size: 0.9em; position: sticky; left: 0; z-index: 1; cursor: default; text-align: center; }
     .compare-table tbody td { background: var(--surface); text-align: center; }
     .compare-table tbody tr:nth-child(even) td { background: #fafafa; }
     .best { color: var(--green); font-weight: 700; }
-    .remove-col {
-      font-size: 0.75em; cursor: pointer; color: var(--red);
-      display: block; text-align: center; margin-top: 3px;
-      font-weight: 600;
-    }
+    .remove-col { font-size: 0.75em; cursor: pointer; color: var(--red); display: block; text-align: center; margin-top: 3px; font-weight: 600; }
     .remove-col:hover { text-decoration: underline; }
-
-    .compare-bar {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 0.82em; flex-wrap: wrap;
-    }
-    .compare-chip {
-      background: var(--blue-light); color: var(--blue);
-      border-radius: 20px; padding: 3px 10px;
-      font-weight: 600; font-size: 0.85em;
-      cursor: pointer; border: 1px solid #bfdbfe;
-      display: flex; align-items: center; gap: 4px;
-    }
+    .compare-bar { display: flex; align-items: center; gap: 6px; font-size: 0.82em; flex-wrap: wrap; }
+    .compare-chip { background: var(--blue-light); color: var(--blue); border-radius: 20px; padding: 3px 10px; font-weight: 600; font-size: 0.85em; cursor: pointer; border: 1px solid #bfdbfe; display: flex; align-items: center; gap: 4px; }
     .compare-chip .x { color: var(--text-muted); font-weight: 400; }
     .compare-chip:hover .x { color: var(--red); }
-
     .mobile-break { display: none; }
-
     .extra-col { display: none; }
     .extra-visible .extra-col { display: table-cell; }
-    .btn-extra {
-      padding: 6px 14px; border-radius: 7px; border: 1px solid var(--blue);
-      font-size: 0.82em; font-weight: 600; cursor: pointer;
-      background: var(--blue); color: #fff;
-      transition: background .15s;
-    }
+    .btn-extra { padding: 6px 14px; border-radius: 7px; border: 1px solid var(--blue); font-size: 0.82em; font-weight: 600; cursor: pointer; background: var(--blue); color: #fff; transition: background .15s; }
     .btn-extra:hover { background: var(--blue-dark); }
     .btn-extra.active { background: var(--blue-dark); color: #fff; }
-
-    /* mobile */
-    @media (max-width: 1024px) {
-      .filters { grid-template-columns: repeat(4, 1fr); }
-    }
-    @media (max-width: 768px) {
-      .scroll-hint { display: block; }
-      .filters { grid-template-columns: repeat(3, 1fr); }
-      th, td { font-size: 0.75em; padding: 7px 9px; }
-      .mobile-break { display: block; }
-    }
-    @media (max-width: 480px) {
-      .filters { grid-template-columns: repeat(2, 1fr); }
-    }
+    @media (max-width: 1024px) { .filters { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 768px) { .scroll-hint { display: block; } .filters { grid-template-columns: repeat(3, 1fr); } th, td { font-size: 0.75em; padding: 7px 9px; } .mobile-break { display: block; } }
+    @media (max-width: 480px) { .filters { grid-template-columns: repeat(2, 1fr); } }
   </style>
 </head>
 <body>
 <div class="container">
+  <div class="header"><h1>JVC Radio Lookup</h1></div>
 
-  <!-- HEADER -->
-  <div class="header">
-    <h1>JVC Radio Lookup</h1>
-  </div>
-
-  <!-- FILTERS -->
   <div class="filters">
     <div class="filter-actions">
       <button class="btn btn-red" id="clearFilters">Clear All Filters</button>
-      <span style="font-size:0.9em; color:var(--text-muted); font-weight:800;">
-        Not seeing the results you expected?<br class="mobile-break"/> Click <span style="color:var(--red);">Clear All Filters</span> and start again.
-      </span>
+      <span style="font-size:0.9em; color:var(--text-muted); font-weight:800;">Not seeing the results you expected?<br class="mobile-break"/> Click <span style="color:var(--red);">Clear All Filters</span> and start again.</span>
     </div>
-
-    <div class="filter-group">
-      <label>Part # / Global Search</label>
-      <div class="ac-wrap">
-        <input type="text" id="search" placeholder="Search any field..." autocomplete="off" />
-        <div class="ac-list" id="acList"></div>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <label>CarPlay / Android Auto</label>
-      <select id="fCarPlay"><option value="">All</option></select>
-    </div>
-    <div class="filter-group">
-      <label>Maestro Compatible</label>
-      <select id="fMaestro"><option value="">All</option></select>
-    </div>
-    <div class="filter-group">
-      <label>SiriusXM Compatible</label>
-      <select id="fSiriusXM"><option value="">All</option></select>
-    </div>
-    <div class="filter-group">
-      <label>CD Player</label>
-      <select id="fCD"><option value="">All</option></select>
-    </div>
-    <div class="filter-group">
-      <label>DVD Player</label>
-      <select id="fDVD"><option value="">All</option></select>
-    </div>
-    <div class="filter-group">
-      <label>HD Radio</label>
-      <select id="fHDRadio"><option value="">All</option></select>
-    </div>
-    <div class="filter-group">
-      <label>Screen Mirroring</label>
-      <select id="fScreenMirror"><option value="">All</option></select>
-    </div>
-    <div class="filter-group">
-      <label>Screen Size</label>
-      <select id="fScreenSize"><option value="">All</option></select>
-    </div>
-    <div class="filter-group">
-      <label>HD Display</label>
-      <select id="fHDDisplay"><option value="">All</option></select>
-    </div>
-    <div class="filter-group">
-      <label>Gesture Control</label>
-      <select id="fGesture"><option value="">All</option></select>
-    </div>
-    <div class="filter-group">
-      <label>Alexa Compatible</label>
-      <select id="fAlexa"><option value="">All</option></select>
-    </div>
+    <div class="filter-group"><label>Part # / Global Search</label><div class="ac-wrap"><input type="text" id="search" placeholder="Search any field..." autocomplete="off" /><div class="ac-list" id="acList"></div></div></div>
+    <div class="filter-group"><label>CarPlay / Android Auto</label><select id="fCarPlay"><option value="">All</option></select></div>
+    <div class="filter-group"><label>Maestro Compatible</label><select id="fMaestro"><option value="">All</option></select></div>
+    <div class="filter-group"><label>SiriusXM Compatible</label><select id="fSiriusXM"><option value="">All</option></select></div>
+    <div class="filter-group"><label>CD Player</label><select id="fCD"><option value="">All</option></select></div>
+    <div class="filter-group"><label>DVD Player</label><select id="fDVD"><option value="">All</option></select></div>
+    <div class="filter-group"><label>HD Radio</label><select id="fHDRadio"><option value="">All</option></select></div>
+    <div class="filter-group"><label>Screen Mirroring</label><select id="fScreenMirror"><option value="">All</option></select></div>
+    <div class="filter-group"><label>Screen Size</label><select id="fScreenSize"><option value="">All</option></select></div>
+    <div class="filter-group"><label>HD Display</label><select id="fHDDisplay"><option value="">All</option></select></div>
+    <div class="filter-group"><label>Gesture Control</label><select id="fGesture"><option value="">All</option></select></div>
+    <div class="filter-group"><label>Alexa Compatible</label><select id="fAlexa"><option value="">All</option></select></div>
     <div class="filter-group" style="grid-column: span 2;">
       <span class="filter-group-label">Audio Formats (must support all checked)</span>
       <div class="checkbox-row" id="fAudioFormats">
@@ -403,7 +133,6 @@
     </div>
   </div>
 
-  <!-- COUNT BAR -->
   <div class="count-bar">
     <span id="count">Showing all entries</span>
     <span style="font-size:1.1em; color:var(--red); font-weight:900;">&#9650;&#9650;&#9650; You can use <span style="text-decoration:underline; text-underline-offset:3px;">Any</span> or <span style="text-decoration:underline; text-underline-offset:3px;">All</span> the filters above to narrow results below &#9650;&#9650;&#9650;</span>
@@ -413,7 +142,6 @@
     </div>
   </div>
 
-  <!-- COMPARE PANEL -->
   <div id="comparePanel" style="display:none; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 10px; overflow: hidden;">
     <div class="compare-header" style="flex-direction:column; align-items:flex-start;">
       <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; width:100%;">
@@ -472,13 +200,7 @@
     <div id="easterEgg" style="display:none; margin-top:10px; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:8px; max-width:500px; margin-left:auto; margin-right:auto;">
       <div style="text-align:center; font-size:0.85em; font-weight:700; color:var(--text-muted); margin-bottom:8px;">Updated: 4-7-26</div>
       <table style="width:100%; border-collapse:collapse; font-size:1.1em;">
-        <thead>
-          <tr style="background:var(--blue); color:#fff;">
-            <th style="padding:8px 12px; text-align:center;">Part #</th>
-            <th style="padding:8px 12px; text-align:center;">Dealer</th>
-            <th style="padding:8px 12px; text-align:center;">MSRP</th>
-          </tr>
-        </thead>
+        <thead><tr style="background:var(--blue); color:#fff;"><th style="padding:8px 12px; text-align:center;">Part #</th><th style="padding:8px 12px; text-align:center;">Dealer</th><th style="padding:8px 12px; text-align:center;">MSRP</th></tr></thead>
         <tbody>
           <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-Z1000AW</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$1,150.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$1,699.00</td></tr>
           <tr><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">KW-Z800AW</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$840.00</td><td style="padding:6px 12px; text-align:center; border-bottom:1px solid var(--border);">$1,249.00</td></tr>
@@ -505,7 +227,6 @@
       </table>
     </div>
   </div>
-
 </div>
 
 <script>
@@ -524,7 +245,7 @@ const rawData = [
 {"Part #":"KW-Z900W","Form Factor":"Floating Screen (Single DIN Chassis)","Screen Size":"9.0\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"2","HD Cam Support":"Yes","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, AAC, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_z900w/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1214_ref_K_En_20.pdf","MSRP":"649.00"},
 {"Part #":"KW-M795BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.92\"","HD Display":"Yes","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"Yes","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"2","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV","URL":"https://www.us.jvc.com/car/multimedia/kw_m795bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1208_ref_K_En_20.pdf","MSRP":"579.00"},
 {"Part #":"KW-V660BT","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired","Gesture Control":"No","CD Player":"Yes","DVD Player":"Yes","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (USB)","HDMI Input":"Yes","Camera Inputs":"2","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_v660bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5H-0357-03_K_EnFrEs.pdf","MSRP":"479.00"},
-{"Part #":"KW-M595BT","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (USB)","HDMI Input":"No","Camera Inputs":"1","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"http://www.us.jvc.com/car/multimedia/kw_m595bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1158-30b.pdf","MSRP":"429.00"},
+{"Part #":"KW-M595BT","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (USB)","HDMI Input":"No","Camera Inputs":"1","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"http://www.us.jvc.com/car/multimedia/kw_m595bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1158-30b.pdf","MSRP":"429.00"},
 {"Part #":"KW-M590BT","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (USB)","HDMI Input":"No","Camera Inputs":"1","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/multimedia/kw_m590bt/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5K-1158-30b.pdf","MSRP":"399.00"},
 {"Part #":"KW-X855BTS","Form Factor":"Double DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front & 1 Rear","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kw_x855bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3844-00.pdf","MSRP":"169.00"},
 {"Part #":"KD-X380BTS","Form Factor":"Single DIN","Screen Size":"N/A","HD Display":"No","Touch Screen":"No","CarPlay and Android Auto":"No","Gesture Control":"No","CD Player":"No","DVD Player":"No","Maestro Compatible":"No","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"No","HDMI Input":"No","Camera Inputs":"No","HD Cam Support":"No","Audio Input":"Yes","Video Output":"No","USB Ports":"1 Front","Pre-amp Outputs":"3 (4.0V)","Alexa Compatible":"Yes","Power Output":"50W x 4","Audio Formats":"MP3, WMA","URL":"https://www.us.jvc.com/car/indashreceivers/kd_x380bts/","Manual URL":"https://manuals.jvckenwood.com/download/files/B5A-3881-00.pdf","MSRP":"139.00"},
@@ -534,56 +255,18 @@ const rawData = [
 {"Part #":"KW-V960BW","Form Factor":"Double DIN CarPlay / Android Auto","Screen Size":"6.8\"","HD Display":"No","Touch Screen":"Yes","CarPlay and Android Auto":"Wired / Wireless","Gesture Control":"Yes","CD Player":"Yes","DVD Player":"Yes","Maestro Compatible":"Yes","SiriusXM":"Yes","HD radio":"No","Screen Mirroring":"Android (WiFi)","HDMI Input":"Yes","Camera Inputs":"4","HD Cam Support":"No","Audio Input":"Yes","Video Output":"Yes","USB Ports":"2 Rear","Pre-amp Outputs":"3 (5.0V)","Alexa Compatible":"No","Power Output":"50W x 4","Audio Formats":"MP3, WMA, WAV, FLAC","URL":"https://www.us.jvc.com/car/multimedia/kw_v960bw/","Manual URL":"https://manuals.jvckenwood.com/download/files/IM405_ref_K_En_11.pdf","MSRP":"999.00"}
 ];
 
-// ── STATE ─────────────────────────────────────────────
-let allData = rawData.map(r => {
-  const dvd = (r['DVD Player']||'').trim();
-  if (!dvd || dvd === 'None') r['DVD Player'] = 'No';
-  return r;
-});
+let allData = rawData.map(r => { const dvd = (r['DVD Player']||'').trim(); if (!dvd || dvd === 'None') r['DVD Player'] = 'No'; return r; });
+const DEFAULT_ORDER = ['KW-Z1000AW','KW-Z800AW','KW-Z1001W','KW-Z900W','KW-V960BW','KW-M865BW','KW-M875DBW','KW-M875BW','KW-M795BW','KW-M695BW','KW-M690BW','KW-V660BT','KW-V66BT','KW-M595BT','KW-M590BT','KW-M180BT','KW-X855BTS','KW-X850BTS','KW-X850BT','KD-X480BHS','KD-X380BTS','KD-X38MBS','KD-X280BT','KD-XD28BT','KD-SX27BT','KW-R950BTS','KW-R950BT','KD-T925BTS','KD-T920BTS','KD-T720BT'];
+const orderMap = {}; DEFAULT_ORDER.forEach((p,i) => orderMap[p] = i);
+allData.sort((a,b) => { const ia = orderMap[a['Part #']] ?? 9999; const ib = orderMap[b['Part #']] ?? 9999; return ia - ib; });
 
-// Default display order
-const DEFAULT_ORDER = [
-  'KW-Z1000AW','KW-Z800AW',
-  'KW-Z1001W','KW-Z900W','KW-V960BW',
-  'KW-M865BW','KW-M875DBW','KW-M875BW','KW-M795BW','KW-M695BW','KW-M690BW',
-  'KW-V660BT','KW-V66BT','KW-M595BT','KW-M590BT','KW-M180BT',
-  'KW-X855BTS','KW-X850BTS','KW-X850BT',
-  'KD-X480BHS','KD-X380BTS','KD-X38MBS','KD-X280BT','KD-XD28BT','KD-SX27BT',
-  'KW-R950BTS','KW-R950BT','KD-T925BTS','KD-T920BTS','KD-T720BT'
-];
-const orderMap = {};
-DEFAULT_ORDER.forEach((p,i) => orderMap[p] = i);
-allData.sort((a,b) => {
-  const ia = orderMap[a['Part #']] ?? 9999;
-  const ib = orderMap[b['Part #']] ?? 9999;
-  return ia - ib;
-});
+let filteredData = [], sortKey = null, sortAsc = true, selectedParts = new Set(), compareExpanded = false;
 
-let filteredData = [];
-let sortKey = null, sortAsc = true;
-let selectedParts = new Set();
-let compareExpanded = false;
+const FILTER_SELECT_MAP = { fScreenSize: 'Screen Size', fHDDisplay: 'HD Display', fCarPlay: 'CarPlay and Android Auto', fGesture: 'Gesture Control', fCD: 'CD Player', fDVD: 'DVD Player', fMaestro: 'Maestro Compatible', fSiriusXM: 'SiriusXM', fHDRadio: 'HD radio', fScreenMirror: 'Screen Mirroring', fAlexa: 'Alexa Compatible' };
 
-// Filter config: id -> data key
-const FILTER_SELECT_MAP = {
-  fScreenSize: 'Screen Size',
-  fHDDisplay: 'HD Display',
-  fCarPlay: 'CarPlay and Android Auto',
-  fGesture: 'Gesture Control',
-  fCD: 'CD Player',
-  fDVD: 'DVD Player',
-  fMaestro: 'Maestro Compatible',
-  fSiriusXM: 'SiriusXM',
-  fHDRadio: 'HD radio',
-  fScreenMirror: 'Screen Mirroring',
-  fAlexa: 'Alexa Compatible'
-};
-
-// ── POPULATE DROPDOWNS ────────────────────────────────
 function populateDropdowns() {
   for (const [id, key] of Object.entries(FILTER_SELECT_MAP)) {
-    const el = document.getElementById(id);
-    const cur = el.value;
+    const el = document.getElementById(id); const cur = el.value;
     el.innerHTML = '<option value="">All</option>';
     const vals = [...new Set(allData.map(r => (r[key]||'').trim()).filter(Boolean))]
       .filter(v => !(id === 'fScreenSize' && v === 'N/A'))
@@ -591,83 +274,43 @@ function populateDropdowns() {
       .filter(v => !(id === 'fSiriusXM' && v === 'Yes (360L Ready)'))
       .filter(v => !(id === 'fScreenMirror' && (v === 'Android (WiFi)' || v === 'Android (USB)')))
       .sort((a,b) => {
-        // Put Yes/Yes variants before No in Yes/No filters
-        const aIsYes = a === 'Yes' || a.startsWith('Yes');
-        const bIsYes = b === 'Yes' || b.startsWith('Yes');
-        const aIsNo = a === 'No';
-        const bIsNo = b === 'No';
-        if (aIsYes && bIsNo) return -1;
-        if (aIsNo && bIsYes) return 1;
-        // Screen Size: largest to smallest
+        const aIsYes = a === 'Yes' || a.startsWith('Yes'), bIsYes = b === 'Yes' || b.startsWith('Yes');
+        const aIsNo = a === 'No', bIsNo = b === 'No';
+        if (aIsYes && bIsNo) return -1; if (aIsNo && bIsYes) return 1;
         if (id === 'fScreenSize') return b.localeCompare(a, undefined, {numeric:true});
-        // CarPlay: Wired/Wireless, Wired, No
-        if (id === 'fCarPlay') {
-          const order = {'Wired / Wireless': 1, 'Wired': 2, 'No': 3};
-          return (order[a]||99) - (order[b]||99);
-        }
+        if (id === 'fCarPlay') { const order = {'Wired / Wireless': 1, 'Wired': 2, 'No': 3}; return (order[a]||99) - (order[b]||99); }
         return a.localeCompare(b, undefined, {numeric:true});
       });
-    vals.forEach(v => {
-      const o = document.createElement('option');
-      o.value = v; o.textContent = v; el.appendChild(o);
-    });
-    // Add combined 6.8"-7" option for Screen Size
+    vals.forEach(v => { const o = document.createElement('option'); o.value = v; o.textContent = v; el.appendChild(o); });
     if (id === 'fScreenSize') {
-      const o = document.createElement('option');
-      o.value = '6.8-7'; o.textContent = '6.8" - 7"';
-      el.appendChild(o);
-      // Re-sort: rebuild options in correct order
-      const opts = [...el.querySelectorAll('option')];
-      const allOpt = opts.find(o => o.value === '');
-      const sizeOpts = opts.filter(o => o.value !== '').sort((a,b) => {
-        const na = parseFloat(a.value) || 0;
-        const nb = parseFloat(b.value) || 0;
-        return nb - na;
-      });
-      el.innerHTML = '';
-      el.appendChild(allOpt);
-      sizeOpts.forEach(o => el.appendChild(o));
+      const o = document.createElement('option'); o.value = '6.8-7'; o.textContent = '6.8" - 7"'; el.appendChild(o);
+      const opts = [...el.querySelectorAll('option')]; const allOpt = opts.find(o => o.value === '');
+      const sizeOpts = opts.filter(o => o.value !== '').sort((a,b) => { const na = parseFloat(a.value)||0, nb = parseFloat(b.value)||0; return nb - na; });
+      el.innerHTML = ''; el.appendChild(allOpt); sizeOpts.forEach(o => el.appendChild(o));
     }
-    // Screen Mirroring: add Yes option since actual values were filtered out
     if (id === 'fScreenMirror') {
-      const yesOpt = document.createElement('option');
-      yesOpt.value = 'Yes'; yesOpt.textContent = 'Yes';
-      // Insert Yes before No
+      const yesOpt = document.createElement('option'); yesOpt.value = 'Yes'; yesOpt.textContent = 'Yes';
       const noOpt = [...el.querySelectorAll('option')].find(o => o.value === 'No');
-      if (noOpt) el.insertBefore(yesOpt, noOpt);
-      else el.appendChild(yesOpt);
+      if (noOpt) el.insertBefore(yesOpt, noOpt); else el.appendChild(yesOpt);
     }
     el.value = cur;
   }
 }
 populateDropdowns();
 
-// ── FILTER & RENDER ───────────────────────────────────
 function applyFilters() {
   const term = document.getElementById('search').value.trim().toLowerCase();
-
   filteredData = allData.filter(r => {
     if (term && !Object.values(r).some(v => String(v).toLowerCase().includes(term))) return false;
     for (const [id, key] of Object.entries(FILTER_SELECT_MAP)) {
-      const fv = document.getElementById(id).value;
-      if (!fv) continue;
+      const fv = document.getElementById(id).value; if (!fv) continue;
       const rv = (r[key]||'').trim();
-      // SiriusXM: "Yes" should match both "Yes" and "Yes (360L Ready)"
-      if (id === 'fSiriusXM' && fv === 'Yes') {
-        if (!rv.startsWith('Yes')) return false;
-      // Screen Size: "6.8-7" should match both "6.8"" and "6.92""
-      } else if (id === 'fScreenSize' && fv === '6.8-7') {
-        if (rv !== '6.8"' && rv !== '6.92"') return false;
-      // Screen Mirroring: "Yes" matches Android (WiFi) and Android (USB)
-      } else if (id === 'fScreenMirror' && fv === 'Yes') {
-        if (rv === 'No') return false;
-      } else if (id === 'fScreenMirror' && fv === 'No') {
-        if (rv !== 'No') return false;
-      } else {
-        if (rv !== fv) return false;
-      }
+      if (id === 'fSiriusXM' && fv === 'Yes') { if (!rv.startsWith('Yes')) return false; }
+      else if (id === 'fScreenSize' && fv === '6.8-7') { if (rv !== '6.8"' && rv !== '6.92"') return false; }
+      else if (id === 'fScreenMirror' && fv === 'Yes') { if (rv === 'No') return false; }
+      else if (id === 'fScreenMirror' && fv === 'No') { if (rv !== 'No') return false; }
+      else { if (rv !== fv) return false; }
     }
-    // Audio Formats checkboxes — must support ALL checked formats
     const checkedFormats = [...document.querySelectorAll('#fAudioFormats input[type="checkbox"]:checked')].map(cb => cb.value);
     if (checkedFormats.length > 0) {
       const supported = (r['Audio Formats']||'').split(',').map(s => s.trim().toUpperCase());
@@ -675,23 +318,18 @@ function applyFilters() {
     }
     return true;
   });
-
-  // sort
   if (sortKey) {
     filteredData = [...filteredData].sort((a,b) => {
       let va = a[sortKey]||'', vb = b[sortKey]||'';
       const na = parseFloat(va), nb = parseFloat(vb);
       if (!isNaN(na) && !isNaN(nb) && na !== nb) return sortAsc ? na-nb : nb-na;
-      // Yes/No columns: Yes before No in ascending
-      const vaNo = va === 'No', vbNo = vb === 'No';
       const vaYes = va === 'Yes' || va.startsWith('Yes'), vbYes = vb === 'Yes' || vb.startsWith('Yes');
-      if (vaYes && vbNo) return sortAsc ? -1 : 1;
-      if (vaNo && vbYes) return sortAsc ? 1 : -1;
+      const vaNo = va === 'No', vbNo = vb === 'No';
+      if (vaYes && vbNo) return sortAsc ? -1 : 1; if (vaNo && vbYes) return sortAsc ? 1 : -1;
       va = va.toString().toLowerCase(); vb = vb.toString().toLowerCase();
       return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
     });
   }
-
   renderTable();
 }
 
@@ -703,296 +341,117 @@ function badgeHTML(val) {
   return v;
 }
 
-const BADGE_COLS = new Set(['HD Display','Gesture Control','CD Player','DVD Player',
-  'Maestro Compatible','HD radio','HDMI Input','HD Cam Support',
-  'Audio Input','Video Output','Alexa Compatible']);
-
-const TABLE_COLS = [
-  'Form Factor','CarPlay and Android Auto','Maestro Compatible','SiriusXM',
-  'CD Player','DVD Player','Screen Mirroring','Screen Size','HD Display','HD radio',
-  'Alexa Compatible','Gesture Control','Audio Formats',
-  'HDMI Input','Camera Inputs','HD Cam Support','Audio Input',
-  'Video Output','USB Ports','Pre-amp Outputs','Power Output','MSRP'
-];
-
-const EXTRA_COLS = new Set([
-  'HDMI Input','Camera Inputs','HD Cam Support',
-  'Audio Input','Video Output','USB Ports','Pre-amp Outputs','Power Output'
-]);
+const BADGE_COLS = new Set(['HD Display','Gesture Control','CD Player','DVD Player','Maestro Compatible','HD radio','HDMI Input','HD Cam Support','Audio Input','Video Output','Alexa Compatible']);
+const TABLE_COLS = ['Form Factor','CarPlay and Android Auto','Maestro Compatible','SiriusXM','CD Player','DVD Player','Screen Mirroring','Screen Size','HD Display','HD radio','Alexa Compatible','Gesture Control','Audio Formats','HDMI Input','Camera Inputs','HD Cam Support','Audio Input','Video Output','USB Ports','Pre-amp Outputs','Power Output','MSRP'];
+const EXTRA_COLS = new Set(['HDMI Input','Camera Inputs','HD Cam Support','Audio Input','Video Output','USB Ports','Pre-amp Outputs','Power Output']);
 
 function renderTable() {
-  const tbody = document.getElementById('tableBody');
-  const noRes = document.getElementById('noResults');
-  const countEl = document.getElementById('count');
-
+  const tbody = document.getElementById('tableBody'), noRes = document.getElementById('noResults'), countEl = document.getElementById('count');
   tbody.innerHTML = '';
-
-  if (filteredData.length === 0) {
-    noRes.style.display = 'block';
-    countEl.innerHTML = '<strong>0</strong> radios found';
-    return;
-  }
+  if (filteredData.length === 0) { noRes.style.display = 'block'; countEl.innerHTML = '<strong>0</strong> radios found'; return; }
   noRes.style.display = 'none';
   countEl.innerHTML = `Showing <strong>${filteredData.length}</strong> of <strong>${allData.length}</strong> radios`;
-
   filteredData.forEach(row => {
-    const tr = document.createElement('tr');
-    const part = row['Part #'];
+    const tr = document.createElement('tr'); const part = row['Part #'];
     if (selectedParts.has(part)) tr.classList.add('selected');
-
-    // checkbox
-    const tdCb = document.createElement('td');
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.checked = selectedParts.has(part);
+    const tdCb = document.createElement('td'); const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.checked = selectedParts.has(part);
     cb.addEventListener('change', () => toggleCompare(part, cb.checked, tr));
-    tdCb.appendChild(cb);
-    tr.appendChild(tdCb);
-
-    // Part #
-    const tdPart = document.createElement('td');
-    const url = row['URL'];
-    if (url && url.startsWith('http')) {
-      const a = document.createElement('a');
-      a.href = url; a.target = '_blank'; a.textContent = part;
-      tdPart.appendChild(a);
-    } else tdPart.textContent = part;
+    tdCb.appendChild(cb); tr.appendChild(tdCb);
+    const tdPart = document.createElement('td'); const url = row['URL'];
+    if (url && url.startsWith('http')) { const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.textContent = part; tdPart.appendChild(a); } else tdPart.textContent = part;
     tr.appendChild(tdPart);
-
-    // All other columns
     TABLE_COLS.forEach(k => {
       const td = document.createElement('td');
       if (EXTRA_COLS.has(k)) td.className = 'extra-col';
       const val = row[k] || '—';
-      if (BADGE_COLS.has(k)) {
-        td.innerHTML = badgeHTML(val);
-      } else if (k === 'MSRP' && val !== '—') {
-        td.textContent = '$' + parseFloat(val).toFixed(2);
-      } else {
-        td.textContent = val;
-      }
+      if (BADGE_COLS.has(k)) td.innerHTML = badgeHTML(val);
+      else if (k === 'MSRP' && val !== '—') td.textContent = '$' + parseFloat(val).toFixed(2);
+      else td.textContent = val;
       tr.appendChild(td);
     });
-
-    // Manual
-    const tdM = document.createElement('td');
-    const mu = row['Manual URL'];
-    if (mu && mu.startsWith('http')) {
-      const a = document.createElement('a'); a.href = mu; a.target = '_blank'; a.textContent = 'PDF';
-      tdM.appendChild(a);
-    } else tdM.textContent = '—';
-    tr.appendChild(tdM);
-
-    tbody.appendChild(tr);
+    const tdM = document.createElement('td'); const mu = row['Manual URL'];
+    if (mu && mu.startsWith('http')) { const a = document.createElement('a'); a.href = mu; a.target = '_blank'; a.textContent = 'PDF'; tdM.appendChild(a); } else tdM.textContent = '—';
+    tr.appendChild(tdM); tbody.appendChild(tr);
   });
-
-  syncScrollWidth();
-  updateSelectAll();
+  syncScrollWidth(); updateSelectAll();
 }
 
-// ── SELECT ALL ────────────────────────────────────────
 document.getElementById('selectAll').addEventListener('change', function() {
   const checked = this.checked;
-  filteredData.forEach(r => {
-    const p = r['Part #'];
-    if (checked) selectedParts.add(p);
-    else selectedParts.delete(p);
-  });
-  renderTable();
-  updateComparePanel();
+  filteredData.forEach(r => { const p = r['Part #']; if (checked) selectedParts.add(p); else selectedParts.delete(p); });
+  renderTable(); updateComparePanel();
 });
 
 function updateSelectAll() {
-  const sa = document.getElementById('selectAll');
-  const visible = filteredData.map(r => r['Part #']);
+  const sa = document.getElementById('selectAll'); const visible = filteredData.map(r => r['Part #']);
   const allChecked = visible.length > 0 && visible.every(p => selectedParts.has(p));
-  sa.checked = allChecked;
-  sa.indeterminate = !allChecked && visible.some(p => selectedParts.has(p));
+  sa.checked = allChecked; sa.indeterminate = !allChecked && visible.some(p => selectedParts.has(p));
 }
 
-// ── COMPARE ───────────────────────────────────────────
 function toggleCompare(part, on, tr) {
-  if (on) selectedParts.add(part);
-  else selectedParts.delete(part);
+  if (on) selectedParts.add(part); else selectedParts.delete(part);
   if (tr) tr.classList.toggle('selected', on);
-  updateSelectAll();
-  updateComparePanel();
+  updateSelectAll(); updateComparePanel();
 }
 
-const COMPARE_FIELDS = [
-  ['Form Factor','Form Factor'],
-  ['Screen Size','Screen Size'],
-  ['HD Display','HD Display'],
-  ['CarPlay / Android Auto','CarPlay and Android Auto'],
-  ['Gesture Control','Gesture Control'],
-  ['CD Player','CD Player'],
-  ['DVD Player','DVD Player'],
-  ['Maestro','Maestro Compatible'],
-  ['SiriusXM','SiriusXM'],
-  ['HD Radio','HD radio'],
-  ['Screen Mirroring','Screen Mirroring'],
-  ['HDMI Input','HDMI Input'],
-  ['Camera Inputs','Camera Inputs'],
-  ['HD Cam Support','HD Cam Support'],
-  ['Audio Input','Audio Input'],
-  ['Video Output','Video Output'],
-  ['USB Ports','USB Ports'],
-  ['Pre-amp Outputs','Pre-amp Outputs'],
-  ['Alexa Compatible','Alexa Compatible'],
-  ['Power Output','Power Output'],
-  ['Audio Formats','Audio Formats'],
-  ['MSRP','MSRP']
-];
-
-const HIGHER_BETTER = new Set(['Camera Inputs']);
-
-// Winner logic for compare highlighting
-// 'yes_over_no' = Yes > No; 'largest_screen' = biggest numeric screen; 
-// 'biggest_number' = highest number wins; 'largest_number' = highest extracted number;
-// 'most_formats' = most audio formats wins
-const WINNER_RULES = {
-  'Screen Size': 'largest_screen',
-  'HD Display': 'yes_over_no',
-  'CarPlay and Android Auto': 'carplay_rank',
-  'Gesture Control': 'yes_over_no',
-  'CD Player': 'yes_over_no',
-  'DVD Player': 'yes_over_no',
-  'Maestro Compatible': 'yes_over_no',
-  'SiriusXM': 'yes_over_no',
-  'HD radio': 'yes_over_no',
-  'Screen Mirroring': 'yes_over_no',
-  'HDMI Input': 'yes_over_no',
-  'Camera Inputs': 'biggest_number',
-  'HD Cam Support': 'yes_over_no',
-  'Audio Input': 'yes_over_no',
-  'Video Output': 'yes_over_no',
-  'USB Ports': 'biggest_number',
-  'Pre-amp Outputs': 'largest_number',
-  'Alexa Compatible': 'yes_over_no',
-  'Audio Formats': 'most_formats',
-  'MSRP': 'lowest_price'
-};
+const COMPARE_FIELDS = [['Form Factor','Form Factor'],['Screen Size','Screen Size'],['HD Display','HD Display'],['CarPlay / Android Auto','CarPlay and Android Auto'],['Gesture Control','Gesture Control'],['CD Player','CD Player'],['DVD Player','DVD Player'],['Maestro','Maestro Compatible'],['SiriusXM','SiriusXM'],['HD Radio','HD radio'],['Screen Mirroring','Screen Mirroring'],['HDMI Input','HDMI Input'],['Camera Inputs','Camera Inputs'],['HD Cam Support','HD Cam Support'],['Audio Input','Audio Input'],['Video Output','Video Output'],['USB Ports','USB Ports'],['Pre-amp Outputs','Pre-amp Outputs'],['Alexa Compatible','Alexa Compatible'],['Power Output','Power Output'],['Audio Formats','Audio Formats'],['MSRP','MSRP']];
+const WINNER_RULES = {'Screen Size':'largest_screen','HD Display':'yes_over_no','CarPlay and Android Auto':'carplay_rank','Gesture Control':'yes_over_no','CD Player':'yes_over_no','DVD Player':'yes_over_no','Maestro Compatible':'yes_over_no','SiriusXM':'yes_over_no','HD radio':'yes_over_no','Screen Mirroring':'yes_over_no','HDMI Input':'yes_over_no','Camera Inputs':'biggest_number','HD Cam Support':'yes_over_no','Audio Input':'yes_over_no','Video Output':'yes_over_no','USB Ports':'biggest_number','Pre-amp Outputs':'largest_number','Alexa Compatible':'yes_over_no','Audio Formats':'most_formats','MSRP':'lowest_price'};
 
 function getWinnerIndices(key, vals) {
   const rule = WINNER_RULES[key] || 'yes_over_no';
-  if (vals.length < 2) return new Set();
-
-  // Check if all values are the same — no winner if tied
-  if (vals.every(v => v === vals[0])) return new Set();
-
+  if (vals.length < 2 || vals.every(v => v === vals[0])) return new Set();
   if (rule === 'yes_over_no') {
-    const hasYes = vals.some(v => v.startsWith('Yes'));
-    const hasNo = vals.some(v => v === 'No' || v === '0' || v === '' || v === '—');
-    if (hasYes && hasNo) {
-      const winners = new Set();
-      vals.forEach((v, i) => { if (v.startsWith('Yes')) winners.add(i); });
-      return winners;
-    }
+    const hasYes = vals.some(v => v.startsWith('Yes')), hasNo = vals.some(v => v === 'No' || v === '0' || v === '' || v === '—');
+    if (hasYes && hasNo) { const w = new Set(); vals.forEach((v,i) => { if (v.startsWith('Yes')) w.add(i); }); return w; }
     return new Set();
   }
-
   if (rule === 'carplay_rank') {
-    // Wired/Wireless > Wired > No
-    const rankMap = {'Wired / Wireless': 3, 'Wired': 2, 'No': 1};
-    const ranks = vals.map(v => rankMap[v] || 0);
-    const maxR = Math.max(...ranks);
+    const rankMap = {'Wired / Wireless':3,'Wired':2,'No':1}; const ranks = vals.map(v => rankMap[v]||0); const maxR = Math.max(...ranks);
     if (ranks.filter(r => r === maxR).length === vals.length) return new Set();
-    const winners = new Set();
-    ranks.forEach((r, i) => { if (r === maxR) winners.add(i); });
-    return winners;
+    const w = new Set(); ranks.forEach((r,i) => { if (r === maxR) w.add(i); }); return w;
   }
-
   if (rule === 'largest_screen') {
-    const nums = vals.map(v => {
-      if (v === 'N/A' || !v) return -1;
-      const m = v.match(/[\d.]+/);
-      return m ? parseFloat(m[0]) : -1;
-    });
+    const nums = vals.map(v => { if (v === 'N/A' || !v) return -1; const m = v.match(/[\d.]+/); return m ? parseFloat(m[0]) : -1; });
     const maxN = Math.max(...nums);
     if (maxN <= 0 || nums.filter(n => n === maxN).length === vals.length) return new Set();
-    const winners = new Set();
-    nums.forEach((n, i) => { if (n === maxN) winners.add(i); });
-    return winners;
+    const w = new Set(); nums.forEach((n,i) => { if (n === maxN) w.add(i); }); return w;
   }
-
   if (rule === 'biggest_number') {
-    const nums = vals.map(v => {
-      const m = String(v).match(/\d+/);
-      return m ? parseInt(m[0]) : -1;
-    });
-    const maxN = Math.max(...nums);
+    const nums = vals.map(v => { const m = String(v).match(/\d+/); return m ? parseInt(m[0]) : -1; }); const maxN = Math.max(...nums);
     if (maxN < 0 || nums.filter(n => n === maxN).length === vals.length) return new Set();
-    const winners = new Set();
-    nums.forEach((n, i) => { if (n === maxN) winners.add(i); });
-    return winners;
+    const w = new Set(); nums.forEach((n,i) => { if (n === maxN) w.add(i); }); return w;
   }
-
   if (rule === 'largest_number') {
-    // Extract the first number (e.g. "3" from "3 (5.0V)") then voltage
-    const scores = vals.map(v => {
-      const m = String(v).match(/([\d.]+)\s*\(([\d.]+)V\)/i);
-      if (m) return parseFloat(m[1]) * 100 + parseFloat(m[2]);
-      const m2 = String(v).match(/[\d.]+/);
-      return m2 ? parseFloat(m2[0]) : -1;
-    });
+    const scores = vals.map(v => { const m = String(v).match(/([\d.]+)\s*\(([\d.]+)V\)/i); if (m) return parseFloat(m[1])*100+parseFloat(m[2]); const m2 = String(v).match(/[\d.]+/); return m2 ? parseFloat(m2[0]) : -1; });
     const maxS = Math.max(...scores);
     if (maxS < 0 || scores.filter(s => s === maxS).length === vals.length) return new Set();
-    const winners = new Set();
-    scores.forEach((s, i) => { if (s === maxS) winners.add(i); });
-    return winners;
+    const w = new Set(); scores.forEach((s,i) => { if (s === maxS) w.add(i); }); return w;
   }
-
   if (rule === 'most_formats') {
-    const counts = vals.map(v => v ? v.split(',').length : 0);
-    const maxC = Math.max(...counts);
+    const counts = vals.map(v => v ? v.split(',').length : 0); const maxC = Math.max(...counts);
     if (maxC <= 0 || counts.filter(c => c === maxC).length === vals.length) return new Set();
-    const winners = new Set();
-    counts.forEach((c, i) => { if (c === maxC) winners.add(i); });
-    return winners;
+    const w = new Set(); counts.forEach((c,i) => { if (c === maxC) w.add(i); }); return w;
   }
-
   if (rule === 'lowest_price') {
-    const nums = vals.map(v => { const m = String(v).match(/[\d.]+/); return m ? parseFloat(m[0]) : Infinity; });
-    const minN = Math.min(...nums);
+    const nums = vals.map(v => { const m = String(v).match(/[\d.]+/); return m ? parseFloat(m[0]) : Infinity; }); const minN = Math.min(...nums);
     if (minN === Infinity || nums.filter(n => n === minN).length === vals.length) return new Set();
-    const winners = new Set();
-    nums.forEach((n, i) => { if (n === minN) winners.add(i); });
-    return winners;
+    const w = new Set(); nums.forEach((n,i) => { if (n === minN) w.add(i); }); return w;
   }
-
   return new Set();
 }
 
 function updateComparePanel() {
-  const panel = document.getElementById('comparePanel');
-  const chipsEl = document.getElementById('compareChips');
-  const countEl2 = document.getElementById('compareCount');
-  const n = selectedParts.size;
-
-  if (n === 0) {
-    panel.style.display = 'none';
-    countEl2.style.display = 'none';
-    if (compareExpanded) { compareExpanded = false; toggleCompareBody(false); }
-    return;
-  }
-
-  panel.style.display = 'block';
-  countEl2.style.display = 'inline';
-  countEl2.textContent = `${n} selected for compare`;
-
+  const panel = document.getElementById('comparePanel'), chipsEl = document.getElementById('compareChips'), countEl2 = document.getElementById('compareCount'), n = selectedParts.size;
+  if (n === 0) { panel.style.display = 'none'; countEl2.style.display = 'none'; if (compareExpanded) { compareExpanded = false; toggleCompareBody(false); } return; }
+  panel.style.display = 'block'; countEl2.style.display = 'inline'; countEl2.textContent = `${n} selected for compare`;
   chipsEl.innerHTML = '';
   [...selectedParts].forEach(part => {
-    const chip = document.createElement('span');
-    chip.className = 'compare-chip';
+    const chip = document.createElement('span'); chip.className = 'compare-chip';
     chip.innerHTML = `${part} <span class="x">✕</span>`;
-    chip.addEventListener('click', () => {
-      selectedParts.delete(part);
-      renderTable();
-      updateComparePanel();
-    });
+    chip.addEventListener('click', () => { selectedParts.delete(part); renderTable(); updateComparePanel(); });
     chipsEl.appendChild(chip);
   });
-
   if (compareExpanded) renderCompareTable();
 }
 
@@ -1000,203 +459,90 @@ function renderCompareTable() {
   const body = document.getElementById('compareBody');
   const rows = [...selectedParts].map(p => allData.find(r => r['Part #'] === p)).filter(Boolean);
   if (rows.length === 0) { body.innerHTML = ''; return; }
-
   let html = '<table class="compare-table"><thead><tr><th>Feature</th>';
-  rows.forEach(r => {
-    const url = r['URL'];
-    const label = url && url.startsWith('http')
-      ? `<a href="${url}" target="_blank" style="color:#fff;">${r['Part #']}</a>`
-      : r['Part #'];
-    html += `<th>${label}<span class="remove-col" data-part="${r['Part #']}">Remove</span></th>`;
-  });
+  rows.forEach(r => { const url = r['URL']; const label = url && url.startsWith('http') ? `<a href="${url}" target="_blank" style="color:#fff;">${r['Part #']}</a>` : r['Part #']; html += `<th>${label}<span class="remove-col" data-part="${r['Part #']}">Remove</span></th>`; });
   html += '</tr></thead><tbody>';
-
   COMPARE_FIELDS.forEach(([label, key]) => {
     html += `<tr><th>${label}</th>`;
-    const vals = rows.map(r => r[key] || '');
-    const winners = getWinnerIndices(key, vals);
-    vals.forEach((v, i) => {
-      const cls = winners.has(i) ? ' class="best"' : '';
-      html += `<td${cls}>${v || '—'}</td>`;
-    });
+    const vals = rows.map(r => r[key] || ''); const winners = getWinnerIndices(key, vals);
+    vals.forEach((v, i) => { const cls = winners.has(i) ? ' class="best"' : ''; html += `<td${cls}>${v || '—'}</td>`; });
     html += '</tr>';
   });
-
-  // Manual row
   html += '<tr><th>Manual</th>';
-  rows.forEach(r => {
-    const mu = r['Manual URL'];
-    html += `<td>${mu && mu.startsWith('http') ? `<a href="${mu}" target="_blank">PDF</a>` : '—'}</td>`;
-  });
+  rows.forEach(r => { const mu = r['Manual URL']; html += `<td>${mu && mu.startsWith('http') ? `<a href="${mu}" target="_blank">PDF</a>` : '—'}</td>`; });
   html += '</tr></tbody></table>';
-
   body.innerHTML = html;
-
-  body.querySelectorAll('.remove-col').forEach(btn => {
-    btn.addEventListener('click', () => {
-      selectedParts.delete(btn.dataset.part);
-      renderTable();
-      updateComparePanel();
-    });
-  });
+  body.querySelectorAll('.remove-col').forEach(btn => { btn.addEventListener('click', () => { selectedParts.delete(btn.dataset.part); renderTable(); updateComparePanel(); }); });
 }
 
 function toggleCompareBody(force) {
   compareExpanded = typeof force === 'boolean' ? force : !compareExpanded;
-  const body = document.getElementById('compareBody');
-  const btn  = document.getElementById('toggleCompareView');
-  const extraCompare = document.getElementById('extraToggleCompare');
-  const extraBtn = document.getElementById('extraToggle');
-  const compareCountEl = document.getElementById('compareCount');
-  const countBarHome = document.getElementById('extraBtnHome');
-  if (compareExpanded) {
-    body.style.display = 'block';
-    btn.textContent = 'Hide Comparison';
-    extraCompare.style.display = 'flex';
-    extraCompare.appendChild(compareCountEl);
-    extraCompare.appendChild(extraBtn);
-    renderCompareTable();
-  } else {
-    body.style.display = 'none';
-    btn.textContent = 'Compare';
-    extraCompare.style.display = 'none';
-    countBarHome.insertBefore(extraBtn, countBarHome.firstChild);
-    countBarHome.appendChild(compareCountEl);
-  }
+  const body = document.getElementById('compareBody'), btn = document.getElementById('toggleCompareView');
+  const extraCompare = document.getElementById('extraToggleCompare'), extraBtn = document.getElementById('extraToggle');
+  const compareCountEl = document.getElementById('compareCount'), countBarHome = document.getElementById('extraBtnHome');
+  if (compareExpanded) { body.style.display = 'block'; btn.textContent = 'Hide Comparison'; extraCompare.style.display = 'flex'; extraCompare.appendChild(compareCountEl); extraCompare.appendChild(extraBtn); renderCompareTable(); }
+  else { body.style.display = 'none'; btn.textContent = 'Compare'; extraCompare.style.display = 'none'; countBarHome.insertBefore(extraBtn, countBarHome.firstChild); countBarHome.appendChild(compareCountEl); }
 }
 
 document.getElementById('toggleCompareView').addEventListener('click', () => toggleCompareBody());
-document.getElementById('clearCompare').addEventListener('click', () => {
-  selectedParts.clear();
-  compareExpanded = false;
-  toggleCompareBody(false);
-  renderTable();
-  updateComparePanel();
-});
+document.getElementById('clearCompare').addEventListener('click', () => { selectedParts.clear(); compareExpanded = false; toggleCompareBody(false); renderTable(); updateComparePanel(); });
 
-// ── AUTOCOMPLETE ──────────────────────────────────────
 let acIndex = -1;
-const searchEl = document.getElementById('search');
-const acList   = document.getElementById('acList');
-
+const searchEl = document.getElementById('search'), acList = document.getElementById('acList');
 function showAC() {
   const term = searchEl.value.trim().toLowerCase();
   if (!term) { acList.classList.remove('show'); return; }
-  const seen = new Set();
-  const suggs = [];
-  const addSugg = (val, type) => {
-    const key = type + ':' + val;
-    if (!seen.has(key) && val.toLowerCase().includes(term)) {
-      seen.add(key); suggs.push({val, type});
-    }
-  };
+  const seen = new Set(), suggs = [];
+  const addSugg = (val, type) => { const key = type+':'+val; if (!seen.has(key) && val.toLowerCase().includes(term)) { seen.add(key); suggs.push({val, type}); } };
   allData.forEach(r => addSugg(r['Part #'], 'Part #'));
   allData.forEach(r => addSugg((r['Form Factor']||'').trim(), 'Form Factor'));
   allData.forEach(r => addSugg((r['Screen Size']||'').trim(), 'Screen Size'));
   const top = suggs.slice(0, 8);
   if (!top.length) { acList.classList.remove('show'); return; }
-
-  acList.innerHTML = top.map((s,i) => {
-    const hi = s.val.replace(new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'), '<em>$1</em>');
-    const tag = s.type !== 'Part #' ? `<span class="ac-tag">${s.type}</span>` : '';
-    return `<div class="ac-item${i===acIndex?' active':''}" data-val="${s.val}">${hi}${tag}</div>`;
-  }).join('');
+  acList.innerHTML = top.map((s,i) => { const hi = s.val.replace(new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'), '<em>$1</em>'); const tag = s.type !== 'Part #' ? `<span class="ac-tag">${s.type}</span>` : ''; return `<div class="ac-item${i===acIndex?' active':''}" data-val="${s.val}">${hi}${tag}</div>`; }).join('');
   acList.classList.add('show');
-  acList.querySelectorAll('.ac-item').forEach(item => {
-    item.addEventListener('click', () => {
-      searchEl.value = item.dataset.val;
-      acList.classList.remove('show'); acIndex = -1;
-      applyFilters();
-    });
-  });
+  acList.querySelectorAll('.ac-item').forEach(item => { item.addEventListener('click', () => { searchEl.value = item.dataset.val; acList.classList.remove('show'); acIndex = -1; applyFilters(); }); });
 }
-
 searchEl.addEventListener('input', () => { acIndex = -1; showAC(); applyFilters(); });
 searchEl.addEventListener('keydown', e => {
   const items = acList.querySelectorAll('.ac-item');
   if (!acList.classList.contains('show') || !items.length) return;
   if (e.key === 'ArrowDown') { e.preventDefault(); acIndex = Math.min(acIndex+1, items.length-1); }
   else if (e.key === 'ArrowUp') { e.preventDefault(); acIndex = Math.max(acIndex-1, 0); }
-  else if (e.key === 'Enter' && acIndex >= 0) {
-    searchEl.value = items[acIndex].dataset.val;
-    acList.classList.remove('show'); acIndex = -1; applyFilters(); return;
-  } else if (e.key === 'Escape') { acList.classList.remove('show'); acIndex = -1; return; }
+  else if (e.key === 'Enter' && acIndex >= 0) { searchEl.value = items[acIndex].dataset.val; acList.classList.remove('show'); acIndex = -1; applyFilters(); return; }
+  else if (e.key === 'Escape') { acList.classList.remove('show'); acIndex = -1; return; }
   items.forEach((it,i) => it.classList.toggle('active', i===acIndex));
 });
-document.addEventListener('click', e => {
-  if (!searchEl.contains(e.target) && !acList.contains(e.target)) {
-    acList.classList.remove('show'); acIndex = -1;
-  }
-});
+document.addEventListener('click', e => { if (!searchEl.contains(e.target) && !acList.contains(e.target)) { acList.classList.remove('show'); acIndex = -1; } });
 
-// ── SORT ──────────────────────────────────────────────
 document.querySelectorAll('th[data-sort]').forEach(th => {
   th.addEventListener('click', () => {
     const k = th.dataset.sort;
     if (sortKey === k) sortAsc = !sortAsc; else { sortKey = k; sortAsc = true; }
-    document.querySelectorAll('th[data-sort]').forEach(t => {
-      const base = t.dataset.label || t.textContent.replace(/ [▲▼]$/,'');
-      t.dataset.label = base;
-      if (t.dataset.sort === sortKey) {
-        t.textContent = base + (sortAsc?' ▲':' ▼'); t.classList.add('sorted');
-      } else { t.textContent = base; t.classList.remove('sorted'); }
-    });
+    document.querySelectorAll('th[data-sort]').forEach(t => { const base = t.dataset.label || t.textContent.replace(/ [▲▼]$/,''); t.dataset.label = base; if (t.dataset.sort === sortKey) { t.textContent = base + (sortAsc?' ▲':' ▼'); t.classList.add('sorted'); } else { t.textContent = base; t.classList.remove('sorted'); } });
     applyFilters();
   });
 });
 
-// ── CLEAR ─────────────────────────────────────────────
-document.getElementById('clearFilters').addEventListener('click', () => {
-  document.getElementById('search').value = '';
-  Object.keys(FILTER_SELECT_MAP).forEach(id => document.getElementById(id).value = '');
-  document.querySelectorAll('#fAudioFormats input[type="checkbox"]').forEach(cb => cb.checked = false);
-  applyFilters();
-});
-
-// ── FILTER LISTENERS ──────────────────────────────────
+document.getElementById('clearFilters').addEventListener('click', () => { document.getElementById('search').value = ''; Object.keys(FILTER_SELECT_MAP).forEach(id => document.getElementById(id).value = ''); document.querySelectorAll('#fAudioFormats input[type="checkbox"]').forEach(cb => cb.checked = false); applyFilters(); });
 document.getElementById('search').addEventListener('input', applyFilters);
-Object.keys(FILTER_SELECT_MAP).forEach(id =>
-  document.getElementById(id).addEventListener('change', applyFilters)
-);
-document.querySelectorAll('#fAudioFormats input[type="checkbox"]').forEach(cb =>
-  cb.addEventListener('change', applyFilters)
-);
+Object.keys(FILTER_SELECT_MAP).forEach(id => document.getElementById(id).addEventListener('change', applyFilters));
+document.querySelectorAll('#fAudioFormats input[type="checkbox"]').forEach(cb => cb.addEventListener('change', applyFilters));
 
-// ── EXTRA FEATURES TOGGLE ─────────────────────────────
 const extraBtn = document.getElementById('extraToggle');
-extraBtn.addEventListener('click', () => {
-  const table = document.getElementById('resultsTable');
-  const showing = table.classList.toggle('extra-visible');
-  extraBtn.textContent = showing ? 'Show Key Features Only' : 'Show More Features';
-  extraBtn.classList.toggle('active', showing);
-  syncScrollWidth();
-});
+extraBtn.addEventListener('click', () => { const table = document.getElementById('resultsTable'); const showing = table.classList.toggle('extra-visible'); extraBtn.textContent = showing ? 'Show Key Features Only' : 'Show More Features'; extraBtn.classList.toggle('active', showing); syncScrollWidth(); });
 
-// ── SCROLL SYNC ───────────────────────────────────────
-const topScroll = document.getElementById('topScroll');
-const topScrollInner = document.getElementById('topScrollInner');
-const tableWrap = document.getElementById('tableWrap');
-
-function syncScrollWidth() {
-  const t = document.getElementById('resultsTable');
-  if (t) topScrollInner.style.width = t.scrollWidth + 'px';
-}
+const topScroll = document.getElementById('topScroll'), topScrollInner = document.getElementById('topScrollInner'), tableWrap = document.getElementById('tableWrap');
+function syncScrollWidth() { const t = document.getElementById('resultsTable'); if (t) topScrollInner.style.width = t.scrollWidth + 'px'; }
 topScroll.addEventListener('scroll', () => tableWrap.scrollLeft = topScroll.scrollLeft);
 tableWrap.addEventListener('scroll', () => topScroll.scrollLeft = tableWrap.scrollLeft);
 window.addEventListener('resize', syncScrollWidth);
 
-// ── INIT ──────────────────────────────────────────────
 applyFilters();
 setTimeout(syncScrollWidth, 100);
 
-// ── EASTER EGG ────────────────────────────────────────
 let eggClicks = 0;
-document.getElementById('copyrightText').addEventListener('click', () => {
-  eggClicks++;
-  if (eggClicks >= 10) {
-    document.getElementById('easterEgg').style.display = 'block';
-  }
-});
+document.getElementById('copyrightText').addEventListener('click', () => { eggClicks++; if (eggClicks >= 10) document.getElementById('easterEgg').style.display = 'block'; });
 </script>
 </body>
 </html>
